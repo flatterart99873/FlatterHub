@@ -698,6 +698,7 @@ TrollingSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 tim
 
 		game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
 		game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+		wait(1)
 	end
 
 	wait(0.2)
