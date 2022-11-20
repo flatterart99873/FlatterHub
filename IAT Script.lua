@@ -123,6 +123,14 @@ local function get_entity(name)
 end
 
 
+--[[			MAIN PART			]]--
+
+local CreditsTab = Window:NewTab("Credits")
+local Section = CreditsTab:NewSection("-- Script Owners --")
+local Section = CreditsTab:NewSection("Script Owner: flatterart99873")
+local Section = CreditsTab:NewSection("Script / Asset helper: yba_jojo7")
+local Section = CreditsTab:NewSection("Gui Owner: KavoUI")
+
 local ItemsTab = Window:NewTab("Items")
 local ItemsSection = ItemsTab:NewSection("Get arrow")
 
@@ -155,11 +163,6 @@ ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or
 		end
 	end
 end)
-
-local CreditsTab = Window:NewTab("Credits")
-local Section = CreditsTab:NewSection("Scripts Owners")
-local Section = CreditsTab:NewSection("Script Owner: flatterart99873")
-local Section = CreditsTab:NewSection("Gui Owner: KavoUI")
 
 local TeleportsTab = Window:NewTab("Teleports")
 
