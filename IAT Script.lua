@@ -1111,7 +1111,7 @@ SPModSection:NewTextBox("Bring something", "Brings a player / dummy!", function(
     local targethum = target.Humanoid
 
     local args = {
-        [1] = target
+        [1] = target,
         [2] = 1.2
     }
 
@@ -1312,7 +1312,7 @@ VTWModSection:NewTextBox("Pull / Bring something", "Pulls / Brings a dummy / pla
     local targethum = target.Humanoid
 
 	local args = {
-    	[1] = target
+    	[1] = target,
     	[2] = 1,
     	[3] = charpos
 	}
