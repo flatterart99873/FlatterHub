@@ -992,7 +992,7 @@ GEModSection:NewTextBox("Beetle Bullet something", "Sends a Beetle Bullet to a d
 	game:GetService("ReplicatedStorage").Attacks.GE.BeetleBulletToss:FireServer(unpack(args))
 end)
 
-GEModSection:NewButton("Beatdown everyone", "Beatdowns everyone!", function()
+GEModSection:NewButton("Beatdown everyone (more like bring)", "Beatdowns everyone!", function()
 	for i, plr in pairs(game.Players:GetPlayers()) do
 		if plr ~= player then
 			wait(0.2)
@@ -1023,4 +1023,305 @@ GEModSection:NewTextBox("Beatdown something", "Beatdowns a dummy / player!", fun
 	}
 
 	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Gold Experience").GELocalisedRemote:FireServer(unpack(args))
+end)
+
+GEModSection:NewButton("Max HP heal yourself", "Heals you to max HP!", function()
+	local char = player.Character
+	
+	local args = {
+		[1] = true,
+		[2] = char.Humanoid,
+		[3] = math.huge,
+		[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[7] = 10,
+		[8] = "rbxassetid://4567255304",
+		[9] = 10
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+end)
+
+GEModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", function()
+	local char = player.Character
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		local args = {
+			[1] = true,
+			[2] = plr.Character.Humanoid,
+			[3] = math.huge,
+			[4] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[7] = 10,
+			[8] = "rbxassetid://4567255304",
+			[9] = 10
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+	end
+end)
+
+GEModSection:NewTextBox("MAX HP heal something", "Heal a player / dummy to MAX HP!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	local args = {
+		[1] = true,
+		[2] = targethum,
+		[3] = math.huge,
+		[4] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[7] = 10,
+		[8] = "rbxassetid://4567255304",
+		[9] = 10
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+end)
+
+
+local SPModSection = StandModTab:NewSection("Star Platinum")
+
+SPModSection:NewButton("Bring everyone", "Brings everyone to you!", function()
+    for i, plr in pairs(game.Players:GetPlayers()) do
+        if plr ~= player then
+            local args = {
+                [1] = plr.Character,
+                [2] = 1.2
+            }
+
+            game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+        end
+    end 
+end)
+
+SPModSection:NewTextBox("Bring something", "Brings a player / dummy!", function(text)
+    local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+    local args = {
+        [1] = target
+        [2] = 1.2
+    }
+
+    game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+end)
+
+SPModSection:NewButton("No cooldown rock throw", "Throw rocks without cooldown!", function()
+    game:GetService("ReplicatedStorage").Attacks.RockThrow:FireServer()
+end)
+
+
+local VTWModSection = StandModTab:NewSection("Vampire The World")
+
+VTWModSection:NewButton("No cooldown knives", "Throws knives without cooldowns!", function()
+	local char = player.Character
+	local args = {
+		[1] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0))
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.DioKnifeThrow:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("No cooldown 21 sec TimeStop", "Stops time for 21 seconds without cooldown!", function()
+	local args = {
+		[1] = 21,
+		[2] = "DIO"
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Timestop:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Show a part of the road roller", "Shows a bit of road roller! (No damage, but funny.)", function()
+	local args = {
+    	[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
+    	[2] = 0
+	}
+
+	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+
+
+	local args = {
+		[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
+		[2] = 0
+	}
+
+	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Unshow road roller", "Unshows road roller.", function()
+	local args = {
+    	[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
+    	[2] = 1
+	}
+
+	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+
+
+	local args = {
+		[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
+		[2] = 1
+	}
+
+	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Bullet Kick everyone", "Bullet Kicks everyone! (Stuns everyone I guess.)", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= game.Players.LocalPlayer then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
+		end
+	end
+end)
+
+VTWModSection:NewTextBox("Bullet Kick something", "Bullet Kicks a dummy / player! (More usable)", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
+end)
+
+VTWModSection:NewTextBox("Donut something (has cooldown)", "Donuts a dummy / player! (Has cooldowns.)", function()
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+	
+	local args = {
+    	[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Donut:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Space Ripper Stingy Eyes everyone", "Sends Space Ripper eyes to everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character.HumanoidRootPart.Position
+			}
+
+			game:GetService("ReplicatedStorage").Attacks.SpaceRipper:FireServer(unpack(args))
+		end
+	end
+end)
+
+VTWModSection:NewTextBox("Space Ripper Stingy Eyes something", "Sends Space Ripper eyes to a dummy / player!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = targetpos
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.SpaceRipper:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Ice Shatter everyone", "Uses Ice Shatter on everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = game:GetService("Players").yba_jojo7.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.IceShatter:FireServer(unpack(args))
+		end
+	end
+end)
+
+VTWModSection:NewTextBox("Ice Shatter something", "Ice Shatters a dummy / player!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.IceShatter:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Pull everyone", "Brings / Pulls everyone to you!", function()
+	local char = player.Character
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character,
+    			[2] = 1,
+    			[3] = char.HumanoidRootPart.Position
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+		end
+	end
+end)
+
+VTWModSection:NewTextBox("Pull / Bring something", "Pulls / Brings a dummy / player to you!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = target
+    	[2] = 1,
+    	[3] = charpos
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+end)
+
+VTWModSection:NewButton("Heal yourself", "Heals yourself with a vampire heal! (Faster heal.)", function()
+	for i = 0, 100, 1 do
+		game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
+	end
 end)
