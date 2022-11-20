@@ -600,7 +600,7 @@ TrollingSection:NewTextBox("Send a living to the map's corner", "Sends a player 
 	local target = game.Workspace:FindFirstChild(targetplrstring)
 	local targetpos = target.HumanoidRootPart.Position
 	local targethum = target.Humanoid
-	
+
 	char:MoveTo(targetpos)
 
 	local args1 = {
@@ -665,7 +665,7 @@ TrollingSection:NewButton("Trampoline everyone 10x", "Trampolines everyone 10 ti
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewButton("Trampoline someone 10x", "Trampolines someone 10 times!", function()
+TrollingSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 times!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
