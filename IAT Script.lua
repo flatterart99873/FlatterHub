@@ -601,27 +601,29 @@ TrollingSection:NewButton("Trampoline everyone 20x", "Trampolines everyone 20 ti
 
 	for i = 0, 20, 1 do
 		for i, plr in pairs(game.Players:GetPlayers()) do
-			char:MoveTo(plr.HumanoidRootPart.Position)
+			if plr ~= player then
+				char:MoveTo(plr.Character.HumanoidRootPart.Position)
 
-			local args1 = {
-				[1] = plr.Character.Humanoid,
-				[2] = 0,
-				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-				[4] = Vector3.new(0, 200, 0),
-				[5] = 0.25,
-				[6] = 2,
-				[7] = "rbxassetid://10094838150",
-				[8] = 3
-			}
+				local args1 = {
+					[1] = plr.Character.Humanoid,
+					[2] = 0,
+					[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[4] = Vector3.new(0, 200, 0),
+					[5] = 0.25,
+					[6] = 2,
+					[7] = "rbxassetid://10094838150",
+					[8] = 3
+				}
 
-			local args2 = {
-				[1] = plr.Character
-			}
+				local args2 = {
+					[1] = plr.Character
+				}
 
-			wait(0.2)
+				wait(0.2)
 
-			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-			game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+				game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+			end
 		end
 	end
 
