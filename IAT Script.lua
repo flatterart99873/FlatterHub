@@ -790,6 +790,43 @@ FlingSection:NewButton("Fling everyone", "Flings everyone to their look directio
 	char:MoveTo(charpos)
 end)
 
+FlingSection:NewButton("Fling everyone 10x", "Flings everyone 10x to their look direction!", function()
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	for i = 0, 10, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			if plr ~= player then
+				char:MoveTo(plr.Character.HumanoidRootPart.Position)
+					
+				local args1 = {
+					[1] = plr.Character.Humanoid,
+					[2] = 0,
+					[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[4] = plr.Character.HumanoidRootPart.CFrame.LookVector * Vector3.new(10000, 10000, 10000),
+					[5] = 0.25,
+					[6] = 1,
+					[7] = "rbxassetid://10094837675",
+					[8] = 7.5
+				}
+
+				local args2 = {
+					[1] = plr.Character
+				}
+
+				wait(0.2)
+
+				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+				game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
+			end
+		end
+	end
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
 FlingSection:NewTextBox("Fling something", "Flings a player / dummy!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
