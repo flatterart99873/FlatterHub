@@ -139,7 +139,7 @@ ItemsSection:NewButton("Get Arrow", "Gives you a normal arrow from the shop", fu
 	GiveArrow:FireServer()
 end)
 
-ItemsSection:NewButton("Get infinite arrows (BUGGY)", "Lets you get more arrows than one!", function()
+ItemsSection:NewButton("Get infinite arrows (Buggy)", "Lets you get more arrows than one!", function()
 	local char = player.Character
 	local GiveArrow = game:GetService("ReplicatedStorage").ItemGiver.GiveArrow
 	for i, item in pairs(player.Backpack:GetChildren()) do
@@ -183,11 +183,14 @@ end)
 
 TPsSection:NewButton("Teleport to Pucci spawns", "Teleports thru all the Pucci NPC spawns!", function()
 	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
 
 	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Pucci:GetChildren()) do
 		char:MoveTo(npcspawn.Position)
-		wait(2)
+		wait(1.5)
 	end
+
+	char:MoveTo(charpos)
 end)
 
 local MapTPsSection = TeleportsTab:NewSection("Map Teleports")
@@ -378,23 +381,27 @@ CombatSection:NewButton("Multiply Stand", "Multiplies your stand, USE IT WITHOUT
 	GiveStand:FireServer()
 end)
 
-CombatSection:NewButton("Enable GOD MODE", "No damage, but some projectiles can hit.", function()
-	local char = player.Character
-	if not game:GetService("ReplicatedStorage").Basic:FindFirstChild("Anchor") then
-		return
-	else
-		local Anchor = game:GetService("ReplicatedStorage").Basic.Anchor
-		Anchor:Destroy()
-		char.Humanoid.Health = 0
-	end
-end)
+CombatSection:NewToggle("Toggle GOD MODE", "Toggles god mode!", function(toggle)
+	if toggle == true then
+		local char = player.Character
 
-CombatSection:NewButton("Disable GOD MODE", "Disable god mode.", function()
-	if game:GetService("ReplicatedStorage").Basic:FindFirstChild("Anchor") then
-		return
-	else
-		local Anchor = Instance.new("RemoteEvent", game.ReplicatedStorage.Basic)
-		Anchor.Name = "Anchor"
+		if not game:GetService("ReplicatedStorage").Basic:FindFirstChild("Anchor") then
+			return
+		else
+			local Anchor = game:GetService("ReplicatedStorage").Basic.Anchor
+			Anchor:Destroy()
+			char.Humanoid.Health = 0
+		end
+	end
+
+	if toggle == false then
+		if game:GetService("ReplicatedStorage").Basic:FindFirstChild("Anchor") then
+			return
+		else
+			local Anchor = Instance.new("RemoteEvent", game.ReplicatedStorage.Basic)
+			Anchor.Name = "Anchor"
+			char.Humanoid.Health = 0
+		end
 	end
 end)
 
@@ -409,42 +416,18 @@ CombatSection:NewButton("Anti TimeStop", "You can move freely in timestops!", fu
 end)
 
 CombatSection:NewToggle("AutoBlock", "Automatically blocks all incoming attacks.", function(toggled)
-	firedenable = 0
 	if toggled == true then
-		repeat
-			wait()
-			firedenable = firedenable + 1
+		while wait() do
+			if toggled == false then
+				break
+			end
+
 			local args = {
     			[1] = true
 			}
 
 			game:GetService("ReplicatedStorage").Basic.Block:FireServer(unpack(args))
-		until
-		firedenable == 10000
-	end
-
-	fireddisable = 0
-	if toggled == false then
-		repeat
-			wait()
-			fireddisable = fireddisable + 1
-			local args = {
-    			[1] = false
-			}
-
-			game:GetService("ReplicatedStorage").Basic.Block:FireServer(unpack(args))
-		until
-		fireddisable == 200
-	end
-
-	if firedenable == 10000 then
-		wait(1)
-		firedenable = 0
-	end
-
-	if fireddisable == 200 then
-		wait(1)
-		fireddisable = 0
+		end
 	end
 end)
 
@@ -944,6 +927,37 @@ RagdollSection:NewTextBox("Ragdoll someone 10x", "Ragdolls someone!", function(t
 	end
 end)
 
+local BlockBreakSection = TrollingTab:NewSection("Block Break")
+
+BlockBreakSection:NewButton("Block Break everyone", "Block Breaks everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args))
+		end
+	end
+end)
+
+BlockBreakSection:NewTextBox("Block Break something", "Block Breaks a dummy / player!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targethum = target.Humanoid
+
+	local args = {
+    	[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args))
+end)
+
 
 
 local StandModTab = Window:NewTab("STAND MOD")
@@ -1143,38 +1157,38 @@ VTWModSection:NewButton("No cooldown 21 sec TimeStop", "Stops time for 21 second
 	game:GetService("ReplicatedStorage").SpecialMoves.Timestop:FireServer(unpack(args))
 end)
 
-VTWModSection:NewButton("Show a part of the road roller", "Shows a bit of road roller! (No damage, but funny.)", function()
-	local args = {
-    	[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
-    	[2] = 0
-	}
+VTWModSection:NewToggle("Toggle road roller", "Shows a bit of road roller! (No damage, but funny.)", function(toggle)
+	if toggle == true then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
+			[2] = 0
+		}
 
-	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
+			[2] = 0
+		}
 
-	local args = {
-		[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
-		[2] = 0
-	}
+		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+	end
 
-	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
-end)
+	if toggle == false then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
+			[2] = 1
+		}
 
-VTWModSection:NewButton("Unshow road roller", "Unshows road roller.", function()
-	local args = {
-    	[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
-    	[2] = 1
-	}
+		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 
-	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
+			[2] = 1
+		}
 
-
-	local args = {
-		[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
-		[2] = 1
-	}
-
-	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+	end
 end)
 
 VTWModSection:NewButton("Bullet Kick everyone", "Bullet Kicks everyone! (Stuns everyone I guess.)", function()
@@ -1207,7 +1221,7 @@ VTWModSection:NewTextBox("Bullet Kick something", "Bullet Kicks a dummy / player
 	game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
 end)
 
-VTWModSection:NewTextBox("Donut something (has cooldown)", "Donuts a dummy / player! (Has cooldowns.)", function()
+VTWModSection:NewTextBox("Donut something (has cooldown)", "Donuts a dummy / player! (Has cooldowns.)", function(text)
 	local char = player.Character
     local charpos = char.HumanoidRootPart.Position
 
@@ -1259,7 +1273,7 @@ VTWModSection:NewButton("Ice Shatter everyone", "Uses Ice Shatter on everyone!",
 	for i, plr in pairs(game.Players:GetPlayers()) do
 		if plr ~= player then
 			local args = {
-    			[1] = game:GetService("Players").yba_jojo7.Character
+    			[1] = plr.Character
 			}
 
 			game:GetService("ReplicatedStorage").SpecialMoves.IceShatter:FireServer(unpack(args))
@@ -1324,4 +1338,256 @@ VTWModSection:NewButton("Heal yourself", "Heals yourself with a vampire heal! (F
 	for i = 0, 100, 1 do
 		game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
 	end
+end)
+
+
+local CDModSection = StandModTab:NewSection("Crazy Diamond")
+
+CDModSection:NewButton("No cooldown Bullet", "Shoots a bullet without cooldowns!", function()
+	game:GetService("ReplicatedStorage").Attacks.CrazyDiamondBulletShoot:FireServer()
+end)
+
+CDModSection:NewToggle("Fake heal mode", "Toggles fake heal! (Can damage others)", function(toggle)
+	if toggle == true then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Left Arm").HealMode,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Left Leg").HealMode,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").HealMode,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Leg").HealMode,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Torso").HealMode,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Head").HealMode,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	end
+
+	if toggle == false then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Left Arm").HealMode,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Left Leg").HealMode,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").HealMode,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Leg").HealMode,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Torso").HealMode,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Head").HealMode,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	end
+end)
+
+CDModSection:NewButton("Bleed everyone 10x", "Makes everyone bleeding 10x!", function()
+	for i = 0, 10, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			if plr ~= player then
+				local args = {
+					[1] = "Bleed",
+					[2] = plr.Character
+				}
+
+				game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+CDModSection:NewTextBox("Bleed something 10x", "Makes bleeding a player / dummy 10x!", function(text)
+	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targethum = target.Humanoid
+
+		local args = {
+			[1] = "Bleed",
+			[2] = target
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+CDModSection:NewButton("Push closest players", "Pushes closest players!", function()
+	local args = {
+    	[1] = "Push"
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
+end)
+
+CDModSection:NewButton("No cooldown Blood Throw", "Uses Blood Throw without cooldown! (Removes HP.)", function()
+	local char = player.Character
+	
+	local args = {
+    	[1] = "BloodCutter"
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
+
+	local args = {
+			[1] = char.Humanoid,
+			[2] = 10,
+			[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[4] = Vector3.new(0, 0, 0),
+			[5] = 0,
+			[6] = 1,
+			[7] = "rbxassetid://2914074987",
+			[8] = 2
+		}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+end)
+
+CDModSection:NewButton("Rock everyone", "Puts everyone in Crazy Diamond's Rock!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = "Rock",
+    			[2] = plr.Character
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+CDModSection:NewTextBox("Rock something", "Puts a player / dummy into a Rock!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targethum = target.Humanoid
+
+	local args = {
+    	[1] = "Rock",
+    	[2] = target
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
+end)
+
+CDModSection:NewButton("MAX HP heal everyone", "Heals everyone to MAX HP!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		local args = {
+			[1] = plr.Character.Humanoid,
+			[2] = math.huge,
+			[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[4] = Vector3.new(0, 0, 0),
+			[5] = 0,
+			[6] = 1,
+			[7] = "rbxassetid://2914074987",
+			[8] = 2
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+	end
+end)
+
+CDModSection:NewButton("MAX HP heal yourself", "Heals yourself to MAX HP!", function()
+	local char = player.Character
+
+	local args = {
+    	[1] = char.Humanoid,
+    	[2] = math.huge,
+    	[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[4] = Vector3.new(0, 0, 0),
+    	[5] = 0,
+		[6] = 1,
+   		[7] = "rbxassetid://2914074987",
+    	[8] = 2
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+end)
+
+CDModSection:NewTextBox("MAX HP heal something", "Heals a dummy / player to MAX HP!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targethum = target.Humanoid
+
+	local args = {
+    	[1] = targethum,
+    	[2] = math.huge,
+    	[3] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[4] = Vector3.new(0, 0, 0),
+    	[5] = 0,
+		[6] = 1,
+   		[7] = "rbxassetid://2914074987",
+    	[8] = 2
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
 end)
