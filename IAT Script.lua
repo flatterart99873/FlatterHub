@@ -160,20 +160,58 @@ local Section = CreditsTab:NewSection("Script Owner: flatterart99873")
 local Section = CreditsTab:NewSection("Gui Owner: KavoUI")
 
 local TeleportsTab = Window:NewTab("Teleports")
-local TPsSection = TeleportsTab:NewSection("Pick up all tools")
+local MapTPsSection = TeleportsTab:NewSection("Map Teleports")
 
-TPsSection:NewButton("Middle Map", "Teleport to the map's middle", function()
+MapTPsSection:NewButton("Middle Map", "Teleport to the map's middle", function()
 	local char = player.Character
     char:MoveTo(Vector3.new(-755, -3, 1605))
 end)
-TPsSection:NewButton("Dummy test", "Teleport to the test dummies", function()
+MapTPsSection:NewButton("Dummy test", "Teleport to the test dummies", function()
 	local char = player.Character
 	char:MoveTo(Vector3.new(-810, -5, 1620))
 end)
-TPsSection:NewButton("1v1 Arena", "Teleport to the 1v1 arena", function()
+MapTPsSection:NewButton("1v1 Arena", "Teleport to the 1v1 arena", function()
     local char = player.Character
 	char:MoveTo(Vector3.new(-551, 1, 1275))
 end)
+
+MapTPsSection:NewButton("Highest Peak", "Teleport to the highest peak", function()
+    local char = player.Character
+    char:MoveTo(Vector3.new(-582, 227, 1286))
+end)
+
+MapTPsSection:NewButton("Kars Cave", "Teleport to the kars cave", function()
+    local char = player.Character
+    char:MoveTo(Vector3.new(-489, 52, 1493))
+end)
+
+MapTPsSection:NewButton("Brown Rocks", "Teleport to the brown rocks", function()
+    local char = player.Character
+    char:MoveTo(Vector3.new(-482, -4, 1662))
+end)
+
+MapTPsSection:NewButton("Forest Campfire", "Teleport to the forest campfire", function()
+    local char = player.Character
+    char:MoveTo(Vector3.new(-837, -4, 1779))
+end)
+
+MapTPsSection:NewButton("Zeppeli Campfire", "Teleport to the zeppeli campfire", function()
+    local char = player.Character
+    char:MoveTo(Vector3.new(-676, 51, 1462))
+end)
+
+MapTPsSection:NewButton("Amogus", "Teleport to the sus easter egg", function()
+    local char = player.Character
+    char:MoveTo(Vector3.new(1, -1, 1400))
+end)
+
+MapTPsSection:NewButton("Brazil", "Teleport to brazil easter egg", function()
+	local char = player.Character
+	char:MoveTo(Vector3.new(1400, 12, -466))
+end)
+
+
+local TPsSection = TeleportsTab:NewSection("NPC / Player teleports")
 
 TPsSection:NewTextBox("Teleport to something", "Teleports to a specified player / dummy!", function(text)
 	local char = player.Character
@@ -188,34 +226,13 @@ TPsSection:NewTextBox("Teleport to something", "Teleports to a specified player 
 	char:MoveTo(targetpos)
 end)
 
-TPsSection:NewButton("Highest Peak", "Teleport to the highest peak", function()
-    local char = player.Character
-    char:MoveTo(Vector3.new(-582, 227, 1286))
-end)
+TPsSection:NewButton("Teleport to Pucci spawns", "Teleports thru all the Pucci NPC spawns!", function()
+	local char = player.Character
 
-TPsSection:NewButton("Kars Cave", "Teleport to the kars cave", function()
-    local char = player.Character
-    char:MoveTo(Vector3.new(-489, 52, 1493))
-end)
-
-TPsSection:NewButton("Brown Rocks", "Teleport to the brown rocks", function()
-    local char = player.Character
-    char:MoveTo(Vector3.new(-482, -4, 1662))
-end)
-
-TPsSection:NewButton("Forest Campfire", "Teleport to the forest campfire", function()
-    local char = player.Character
-    char:MoveTo(Vector3.new(-837, -4, 1779))
-end)
-
-TPsSection:NewButton("Zeppeli Campfire", "Teleport to the zeppeli campfire", function()
-    local char = player.Character
-    char:MoveTo(Vector3.new(-676, 51, 1462))
-end)
-
-TPsSection:NewButton("Amogus", "Teleport to the sus easter egg", function()
-    local char = player.Character
-    char:MoveTo(Vector3.new(1, -1, 1400))
+	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Pucci:GetChildren()) do
+		char:MoveTo(npcspawn.Position)
+		wait(2)
+	end
 end)
 
 
@@ -245,6 +262,25 @@ end)
 PlayerSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield", function()
    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
+
+PlayerSection:NewButton("Fling yourself", "Flings you to your look direction!", function()
+	local char = player.Character
+	
+	local args = {
+		[1] = game:GetService("Players").LocalPlayer.Character.Humanoid,
+		[2] = 0,
+		[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[4] = char.HumanoidRootPart.CFrame.LookVector * Vector3.new(1000, 1000, 1000),
+		[5] = 0.25,
+		[6] = 1,
+		[7] = "rbxassetid://10094837675",
+		[8] = 7.5
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
+end)
+
+
 
 local CombatTab = Window:NewTab("Combat")
 local Disclaimer = CombatTab:NewSection("DISCLAIMER: Enter the name not the nickname!")
@@ -514,7 +550,7 @@ TrollingSection:NewButton("Send everyone to space", "Sends everyone high up flyi
 			wait(0.2)
 
 			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-			game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+			game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 		end
 	end
 	wait(0.2)
@@ -552,7 +588,7 @@ TrollingSection:NewTextBox("Send something to space", "Sends a player / dummy hi
 	wait(0.2)
 
 	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-	game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 
 	wait(0.2)
 
@@ -583,7 +619,7 @@ TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone t
 			wait(0.2)
 
 			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-			game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+			game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 		end
 	end
 	wait(0.2)
@@ -621,7 +657,7 @@ TrollingSection:NewTextBox("Send a living to the map's corner", "Sends a player 
 	wait(0.2)
 
 	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-	game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 
 	wait(0.2)
 
@@ -655,7 +691,7 @@ TrollingSection:NewButton("Trampoline everyone 10x", "Trampolines everyone 10 ti
 				wait(0.2)
 
 				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-				game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+				game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 			end
 		end
 	end
@@ -666,17 +702,17 @@ TrollingSection:NewButton("Trampoline everyone 10x", "Trampolines everyone 10 ti
 end)
 
 TrollingSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 times!", function(text)
-	local char = player.Character
-	local charpos = char.HumanoidRootPart.Position
-
-	local subtext = get_player(text) or get_entity(text)
-	local targetplrstring = tostring(subtext)
-
-	local target = game.Workspace:FindFirstChild(targetplrstring)
-	local targetpos = target.HumanoidRootPart.Position
-	local targethum = target.Humanoid
-
 	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targetpos = target.HumanoidRootPart.Position
+		local targethum = target.Humanoid
+
 		char:MoveTo(targetpos)
 
 		local args1 = {
@@ -697,9 +733,82 @@ TrollingSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 tim
 		wait(0.2)
 
 		game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-		game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+		game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 		wait(1)
 	end
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
+TrollingSection:NewButton("Fling everyone", "Flings everyone to their look direction!", function()
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			char:MoveTo(plr.Character.HumanoidRootPart.Position)
+				
+			local args1 = {
+				[1] = plr.Character.Humanoid,
+				[2] = 0,
+				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+				[4] = plr.Character.HumanoidRootPart.CFrame.LookVector * Vector3.new(10000, 10000, 10000),
+				[5] = 0.25,
+				[6] = 1,
+				[7] = "rbxassetid://10094837675",
+				[8] = 7.5
+			}
+
+			local args2 = {
+				[1] = plr.Character
+			}
+
+			wait(0.2)
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+			game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
+		end
+	end
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
+TrollingSection:NewTextBox("Fling something", "Flings a player / dummy!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	char:MoveTo(targetpos)
+
+	local args1 = {
+		[1] = targethum,
+		[2] = 0,
+		[3] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[4] = target.HumanoidRootPart.CFrame.LookVector * Vector3.new(10000, 10000, 10000),
+		[5] = 0.25,
+		[6] = 1,
+		[7] = "rbxassetid://10094837675",
+		[8] = 7.5
+	}
+
+	local args2 = {
+		[1] = target
+	}
+
+	wait(0.2)
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 
 	wait(0.2)
 
