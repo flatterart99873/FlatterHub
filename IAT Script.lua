@@ -322,7 +322,7 @@ CombatSection:NewButton("Kill all players", "Kills all players!", function()
 	char:MoveTo(charpos)
 end)
 
-CombatSection:NewTextBox("Kills specified living", "Kills a specified player / dummy!", function(text)
+CombatSection:NewTextBox("Kill something", "Kills a specified player / dummy!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -626,7 +626,7 @@ TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone t
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewTextBox("Send a living to the map's corner", "Sends a player / dummy to the map's corner!", function(text)
+TrollingSection:NewTextBox("Send something to the map's corner", "Sends a player / dummy to the map's corner!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
