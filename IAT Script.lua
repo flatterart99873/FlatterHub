@@ -124,7 +124,7 @@ end
 
 
 local ItemsTab = Window:NewTab("Items")
-local ItemsSection = ItemsTab:NewSection("Give Arrow")
+local ItemsSection = ItemsTab:NewSection("Get arrow")
 
 ItemsSection:NewButton("Get Arrow", "Gives you a normal arrow from the shop", function()
 	local GiveArrow = game:GetService("ReplicatedStorage").ItemGiver.GiveArrow
@@ -143,7 +143,9 @@ ItemsSection:NewButton("Get infinite arrows (BUGGY)", "Lets you get more arrows 
 	GiveArrow:FireServer()
 end)
 
-ItemsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or Dio's diary or Dio's Bone", function()
+local ItemTPsSection = ItemsTab:NewSection("Pick up all tools")
+
+ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or Dio's diary or Dio's Bone", function()
 	local char = player.Character
 	for i, tool in pairs(game.Workspace:GetChildren()) do
 		if tool.ClassName == "Tool" then
@@ -160,6 +162,31 @@ local Section = CreditsTab:NewSection("Script Owner: flatterart99873")
 local Section = CreditsTab:NewSection("Gui Owner: KavoUI")
 
 local TeleportsTab = Window:NewTab("Teleports")
+
+local TPsSection = TeleportsTab:NewSection("NPC / Player teleports")
+
+TPsSection:NewTextBox("Teleport to something", "Teleports to a specified player / dummy!", function(text)
+	local char = player.Character
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	char:MoveTo(targetpos)
+end)
+
+TPsSection:NewButton("Teleport to Pucci spawns", "Teleports thru all the Pucci NPC spawns!", function()
+	local char = player.Character
+
+	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Pucci:GetChildren()) do
+		char:MoveTo(npcspawn.Position)
+		wait(2)
+	end
+end)
+
 local MapTPsSection = TeleportsTab:NewSection("Map Teleports")
 
 MapTPsSection:NewButton("Middle Map", "Teleport to the map's middle", function()
@@ -211,31 +238,6 @@ MapTPsSection:NewButton("Brazil", "Teleport to brazil easter egg", function()
 end)
 
 
-local TPsSection = TeleportsTab:NewSection("NPC / Player teleports")
-
-TPsSection:NewTextBox("Teleport to something", "Teleports to a specified player / dummy!", function(text)
-	local char = player.Character
-
-	local subtext = get_player(text) or get_entity(text)
-	local targetplrstring = tostring(subtext)
-
-	local target = game.Workspace:FindFirstChild(targetplrstring)
-	local targetpos = target.HumanoidRootPart.Position
-	local targethum = target.Humanoid
-
-	char:MoveTo(targetpos)
-end)
-
-TPsSection:NewButton("Teleport to Pucci spawns", "Teleports thru all the Pucci NPC spawns!", function()
-	local char = player.Character
-
-	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Pucci:GetChildren()) do
-		char:MoveTo(npcspawn.Position)
-		wait(2)
-	end
-end)
-
-
 local ToggleGuiTab = Window:NewTab("Toggle GUI")
 local ToggleGuiSection = ToggleGuiTab:NewSection("On/Off")
 ToggleGuiSection:NewKeybind("KeybindText", "KeybindInfo", Enum.KeyCode.LeftControl, function()
@@ -243,7 +245,8 @@ ToggleGuiSection:NewKeybind("KeybindText", "KeybindInfo", Enum.KeyCode.LeftContr
 end)
 
 local PlayerTab = Window:NewTab("Player")
-local PlayerSection = PlayerTab:NewSection("WalkSpeed")
+local PlayerSection = PlayerTab:NewSection("WalkSpeed / JumpPower")
+
 PlayerSection:NewSlider("WalkSpeed", "Changes walk speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     local char = player.Character
 	char.Humanoid.WalkSpeed = s
@@ -254,10 +257,14 @@ PlayerSection:NewSlider("JumpPower", "Changes jump power", 500, 0, function(s) -
 	char.Humanoid.JumpPower = s
 end)
 
+local ResetSection = PlayerTab:NewSection("Reset")
+
 PlayerSection:NewButton("Reset", "Reset your character instantly", function()
     local char = player.Character
 	char.Humanoid.Health = 0
 end)
+
+local AdminSection = PlayerTab:NewSection("Admin GUI")
 
 PlayerSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield", function()
    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
@@ -452,9 +459,9 @@ end)]]--
 
 
 local TrollingTab = Window:NewTab("Trolling")
-local TrollingSection = TrollingTab:NewSection("Trolling")
+local StunSection = TrollingTab:NewSection("Stun players")
 
-TrollingSection:NewTextBox("Stun everyone for given seconds", "Stuns all players for the amount entered in seconds!", function(text)
+StunSection:NewTextBox("Stun everyone for given seconds", "Stuns all players for the amount entered in seconds!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 	for i, plr in pairs(game.Players:GetPlayers()) do
@@ -486,7 +493,7 @@ TrollingSection:NewTextBox("Stun everyone for given seconds", "Stuns all players
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewTextBox("Stun someone for 10 seconds", "Stuns a specified player for 10 seconds!", function(text)
+StunSection:NewTextBox("Stun someone for 10 seconds", "Stuns a specified player for 10 seconds!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -526,7 +533,9 @@ TrollingSection:NewTextBox("Stun someone for 10 seconds", "Stuns a specified pla
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewButton("Send everyone to space", "Sends everyone high up flying!", function()
+local SpaceSection = TrollingTab:NewSection("Send players to space")
+
+SpaceSection:NewButton("Send everyone to space", "Sends everyone high up flying!", function()
 	local char = player.Character
 	local charpos = char:WaitForChild("HumanoidRootPart").Position
 	for i, plr in pairs(game.Players:GetPlayers()) do
@@ -557,7 +566,7 @@ TrollingSection:NewButton("Send everyone to space", "Sends everyone high up flyi
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewTextBox("Send something to space", "Sends a player / dummy high up flying!", function(text)
+SpaceSection:NewTextBox("Send something to space", "Sends a player / dummy high up flying!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -595,7 +604,7 @@ TrollingSection:NewTextBox("Send something to space", "Sends a player / dummy hi
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone to the map's corner!", function()
+SpaceSection:NewButton("Send everyone to the map's corner", "Sends everyone to the map's corner!", function()
 	local char = player.Character
 	local charpos = char:WaitForChild("HumanoidRootPart").Position
 	for i, plr in pairs(game.Players:GetPlayers()) do
@@ -626,7 +635,7 @@ TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone t
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewTextBox("Send something to the map's corner", "Sends a player / dummy to the map's corner!", function(text)
+SpaceSection:NewTextBox("Send something to the map's corner", "Sends a player / dummy to the map's corner!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -664,7 +673,9 @@ TrollingSection:NewTextBox("Send something to the map's corner", "Sends a player
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewButton("Trampoline everyone 10x", "Trampolines everyone 10 times!", function()
+local TrampolineSection = TrollingTab:NewSection("Trampoline players")
+
+TrampolineSection:NewButton("Trampoline everyone 10x", "Trampolines everyone 10 times!", function()
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -701,7 +712,7 @@ TrollingSection:NewButton("Trampoline everyone 10x", "Trampolines everyone 10 ti
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 times!", function(text)
+TrampolineSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 times!", function(text)
 	for i = 0, 10, 1 do
 		local char = player.Character
 		local charpos = char.HumanoidRootPart.Position
@@ -742,7 +753,9 @@ TrollingSection:NewTextBox("Trampoline someone 10x", "Trampolines someone 10 tim
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewButton("Fling everyone", "Flings everyone to their look direction!", function()
+local FlingSection = TrollingTab:NewSection("Fling players")
+
+FlingSection:NewButton("Fling everyone", "Flings everyone to their look direction!", function()
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -777,7 +790,7 @@ TrollingSection:NewButton("Fling everyone", "Flings everyone to their look direc
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewTextBox("Fling something", "Flings a player / dummy!", function(text)
+FlingSection:NewTextBox("Fling something", "Flings a player / dummy!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -814,3 +827,50 @@ TrollingSection:NewTextBox("Fling something", "Flings a player / dummy!", functi
 
 	char:MoveTo(charpos)
 end)
+
+FlingSection:NewTextBox("Fling something 10x", "Flings a player / dummy 10x!", function(text)
+	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targetpos = target.HumanoidRootPart.Position
+		local targethum = target.Humanoid
+
+		char:MoveTo(targetpos)
+
+		local args1 = {
+			[1] = targethum,
+			[2] = 0,
+			[3] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+			[4] = target.HumanoidRootPart.CFrame.LookVector * Vector3.new(10000, 10000, 10000),
+			[5] = 0.25,
+			[6] = 1,
+			[7] = "rbxassetid://10094837675",
+			[8] = 7.5
+		}
+
+		local args2 = {
+			[1] = target
+		}
+
+		wait(0.2)
+
+		game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+		game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
+	end
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
+
+
+
+local StandModTab = Window:NewTab("STAND MOD")
+
+local SPModSection = StandModTab:NewSection("Star Platinum")
