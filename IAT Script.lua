@@ -262,18 +262,20 @@ end)
 
 local ResetSection = PlayerTab:NewSection("Reset")
 
-PlayerSection:NewButton("Reset", "Reset your character instantly", function()
+ResetSection:NewButton("Reset", "Reset your character instantly", function()
     local char = player.Character
 	char.Humanoid.Health = 0
 end)
 
 local AdminSection = PlayerTab:NewSection("Admin GUI")
 
-PlayerSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield", function()
+AdminSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield", function()
    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
 
-PlayerSection:NewButton("Fling yourself", "Flings you to your look direction!", function()
+local SelfFlingSection = PlayerTab:NewSection("Self fling")
+
+SelfFlingSection:NewButton("Fling yourself", "Flings you to your look direction!", function()
 	local char = player.Character
 	
 	local args = {
@@ -289,7 +291,6 @@ PlayerSection:NewButton("Fling yourself", "Flings you to your look direction!", 
 
 	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
 end)
-
 
 
 local CombatTab = Window:NewTab("Combat")
@@ -908,9 +909,118 @@ FlingSection:NewTextBox("Fling something 10x", "Flings a player / dummy 10x!", f
 	char:MoveTo(charpos)
 end)
 
+local RagdollSection = TrollingTab:NewSection("Ragdoll")
+
+RagdollSection:NewButton("Ragdoll everyone 10x", "Ragdolls everyone!", function()
+	for i = 0, 10, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			if plr ~= player then
+				local args = {
+					[1] = plr.Character.Humanoid
+				}
+
+				game:GetService("ReplicatedStorage").Basic.Ragdoll:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+RagdollSection:NewTextBox("Ragdoll someone 10x", "Ragdolls someone!", function(text)
+	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targethum = target.Humanoid
+
+		local args = {
+			[1] = targethum
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Ragdoll:FireServer(unpack(args))
+	end
+end)
 
 
 
 local StandModTab = Window:NewTab("STAND MOD")
 
-local SPModSection = StandModTab:NewSection("Star Platinum")
+local GEModSection = StandModTab:NewSection("Golden Experience")
+
+GEModSection:NewButton("No cooldown Beetle Bullet", "No cooldown Beetle Bullet move!", function()
+	local args = {
+    	[1] = true,
+    	[2] = plr.Character.HumanoidRootPart.Position
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.GE.BeetleBulletToss:FireServer(unpack(args))
+end)
+
+GEModSection:NewButton("Beetle Bullet Toss everyone", "Sends a Beetle Bullet to everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			wait(0.2)
+			local args = {
+    			[1] = false,
+    			[2] = plr.Character.HumanoidRootPart.Position
+			}
+
+			game:GetService("ReplicatedStorage").Attacks.GE.BeetleBulletToss:FireServer(unpack(args))
+		end
+	end
+end)
+
+GEModSection:NewTextBox("Beetle Bullet something", "Sends a Beetle Bullet to a dummy / player!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	local args = {
+    	[1] = false,
+    	[2] = targetpos
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.GE.BeetleBulletToss:FireServer(unpack(args))
+end)
+
+GEModSection:NewButton("Beatdown everyone", "Beatdowns everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			wait(0.2)
+			local args = {
+    			[1] = "Beatdown",
+    			[2] = plr.Character
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Gold Experience").GELocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+GEModSection:NewTextBox("Beatdown something", "Beatdowns a dummy / player!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	local args = {
+    	[1] = "Beatdown",
+    	[2] = target
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Gold Experience").GELocalisedRemote:FireServer(unpack(args))
+end)
