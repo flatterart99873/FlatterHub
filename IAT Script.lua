@@ -295,78 +295,6 @@ CombatSection:NewTextBox("Kills specified living", "Kills a specified player / d
 	char:MoveTo(charpos)
 end)
 
-CombatSection:NewTextBox("Stun all players for specified seconds", "Stuns all players for the amount entered in seconds!", function(text)
-	local char = player.Character
-	local charpos = char.HumanoidRootPart.Position
-	for i, plr in pairs(game.Players:GetPlayers()) do
-		if plr ~= player then
-			char:MoveTo(plr.Character.HumanoidRootPart.Position)
-			stun = tonumber(text)
-			local args1 = {
-				[1] = plr.Character.Humanoid,
-				[2] = 0,
-				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-				[4] = Vector3.new(0, 0, 0),
-				[5] = stun,
-				[6] = 2,
-				[7] = "rbxassetid://541909913",
-				[8] = 2
-			}
-
-			local args2 = {
-    			[1] = plr.Character
-			}
-
-			wait(0.2)
-
-			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-			game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
-		end
-	end
-	wait(0.2)
-	char:MoveTo(charpos)
-end)
-
-CombatSection:NewTextBox("Stun specified player for 10 seconds", "Stuns a specified player for 10 seconds!", function(text)
-	local char = player.Character
-	local charpos = char.HumanoidRootPart.Position
-
-	local subtext = get_player(text)
-	local targetplrstring = tostring(subtext)
-
-	local target = game.Workspace:FindFirstChild(targetplrstring)
-	local targetpos = target.HumanoidRootPart.Position
-	local targethum = target.Humanoid
-
-	char:MoveTo(targetpos)
-
-	local args1 = {
-		[1] = targethum,
-		[2] = 0,
-		[3] = CFrame.new(target.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-		[4] = Vector3.new(0, 0, 0),
-		[5] = 10,
-		[6] = 2,
-		[7] = "rbxassetid://541909913",
-		[8] = 2
-	}
-
-	local args2 = {
-    	[1] = target
-	}
-
-	
-
-	wait(0.2)
-
-	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
-
-	wait(0.2)
-
-	char:MoveTo(charpos)
-end)
-
 CombatSection:NewButton("Multiply Stand", "Multiplies your stand, USE IT WITHOUT STAND.", function()
 	local GiveStand = game:GetService("ReplicatedStorage").GiveStand
 	GiveStand:FireServer()
@@ -423,7 +351,7 @@ CombatSection:NewToggle("AutoBlock", "Automatically blocks all incoming attacks.
 			wait()
 			fireddisable = fireddisable + 1
 			local args = {
-    			[1] = true
+    			[1] = false
 			}
 
 			game:GetService("ReplicatedStorage").Basic.Block:FireServer(unpack(args))
@@ -432,10 +360,12 @@ CombatSection:NewToggle("AutoBlock", "Automatically blocks all incoming attacks.
 	end
 
 	if firedenable == 1000 then
+		wait(1)
 		firedenable = 0
 	end
 
 	if fireddisable == 1000 then
+		wait(1)
 		fireddisable = 0
 	end
 end)
@@ -456,6 +386,78 @@ end)]]--
 
 local TrollingTab = Window:NewTab("Trolling")
 local TrollingSection = TrollingTab:NewSection("Trolling")
+
+TrollingSection:NewTextBox("Stun all players for specified seconds", "Stuns all players for the amount entered in seconds!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			char:MoveTo(plr.Character.HumanoidRootPart.Position)
+			stun = tonumber(text)
+			local args1 = {
+				[1] = plr.Character.Humanoid,
+				[2] = 0,
+				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+				[4] = Vector3.new(0, 0, 0),
+				[5] = stun,
+				[6] = 2,
+				[7] = "rbxassetid://541909913",
+				[8] = 2
+			}
+
+			local args2 = {
+    			[1] = plr.Character
+			}
+
+			wait(0.2)
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+			game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
+		end
+	end
+	wait(0.2)
+	char:MoveTo(charpos)
+end)
+
+TrollingSection:NewTextBox("Stun specified player for 10 seconds", "Stuns a specified player for 10 seconds!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	char:MoveTo(targetpos)
+
+	local args1 = {
+		[1] = targethum,
+		[2] = 0,
+		[3] = CFrame.new(target.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[4] = Vector3.new(0, 0, 0),
+		[5] = 10,
+		[6] = 2,
+		[7] = "rbxassetid://541909913",
+		[8] = 2
+	}
+
+	local args2 = {
+    	[1] = target
+	}
+
+	
+
+	wait(0.2)
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
 
 TrollingSection:NewButton("Send everyone to space", "Sends everyone high up flying!", function()
 	local char = player.Character
@@ -521,10 +523,12 @@ TrollingSection:NewTextBox("Send specified living to space", "Sends a player / d
 	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
 	game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
 
+	wait(0.2)
+
 	char:MoveTo(charpos)
 end)
 
-TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone to the map's corner!", function(text)
+TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone to the map's corner!", function()
 	local char = player.Character
 	local charpos = char:WaitForChild("HumanoidRootPart").Position
 	for i, plr in pairs(game.Players:GetPlayers()) do
@@ -552,5 +556,76 @@ TrollingSection:NewButton("Send everyone to the map's corner", "Sends everyone t
 		end
 	end
 	wait(0.2)
+	char:MoveTo(charpos)
+end)
+
+TrollingSection:NewTextBox("Send a living to the map's corner", "Sends a player / dummy to the map's corner!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	local args1 = {
+		[1] = targethum,
+		[2] = 0,
+		[3] = CFrame.new(target.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[4] = Vector3.new(100, 100, 100),
+		[5] = 10,
+		[6] = 1,
+		[7] = "rbxassetid://10094837675",
+		[8] = 7.5
+	}
+
+	local args2 = {
+		[1] = target
+	}
+
+	wait(0.2)
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+	game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
+TrollingSection:NewButton("Trampoline everyone 20x", "Trampolines everyone 20 times!", function()
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	for i = 0, 20, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			char:MoveTo(plr.HumanoidRootPart.Position)
+
+			local args1 = {
+				[1] = plr.Character.Humanoid,
+				[2] = 0,
+				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+				[4] = Vector3.new(0, 200, 0),
+				[5] = 0.25,
+				[6] = 2,
+				[7] = "rbxassetid://10094838150",
+				[8] = 3
+			}
+
+			local args2 = {
+				[1] = plr.Character
+			}
+
+			wait(0.2)
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+			game:GetService("ReplicatedStorage").Attacks.DamageBeserk:FireServer(unpack(args1))
+		end
+	end
+
+	wait(0.2)
+
 	char:MoveTo(charpos)
 end)
