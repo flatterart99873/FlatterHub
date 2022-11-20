@@ -1534,23 +1534,6 @@ CDModSection:NewTextBox("Rock something", "Puts a player / dummy into a Rock!", 
 	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Crazy Diamond").CDLocalisedRemote:FireServer(unpack(args))
 end)
 
-CDModSection:NewButton("MAX HP heal everyone", "Heals everyone to MAX HP!", function()
-	for i, plr in pairs(game.Players:GetPlayers()) do
-		local args = {
-			[1] = plr.Character.Humanoid,
-			[2] = math.huge,
-			[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-			[4] = Vector3.new(0, 0, 0),
-			[5] = 0,
-			[6] = 1,
-			[7] = "rbxassetid://2914074987",
-			[8] = 2
-		}
-
-		game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
-	end
-end)
-
 CDModSection:NewButton("MAX HP heal yourself", "Heals yourself to MAX HP!", function()
 	local char = player.Character
 
@@ -1566,6 +1549,23 @@ CDModSection:NewButton("MAX HP heal yourself", "Heals yourself to MAX HP!", func
 	}
 
 	game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+end)
+
+CDModSection:NewButton("MAX HP heal everyone", "Heals everyone to MAX HP!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		local args = {
+			[1] = plr.Character.Humanoid,
+			[2] = math.huge,
+			[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[4] = Vector3.new(0, 0, 0),
+			[5] = 0,
+			[6] = 1,
+			[7] = "rbxassetid://2914074987",
+			[8] = 2
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+	end
 end)
 
 CDModSection:NewTextBox("MAX HP heal something", "Heals a dummy / player to MAX HP!", function(text)
