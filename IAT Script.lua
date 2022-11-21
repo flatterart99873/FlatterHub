@@ -395,12 +395,13 @@ CombatSection:NewToggle("Toggle GOD MODE", "Toggles god mode!", function(toggle)
 	end
 
 	if toggle == false then
+		local char = player.Character
 		if game:GetService("ReplicatedStorage").Basic:FindFirstChild("Anchor") then
 			return
 		else
+			char.Humanoid.Health = 0
 			local Anchor = Instance.new("RemoteEvent", game.ReplicatedStorage.Basic)
 			Anchor.Name = "Anchor"
-			char.Humanoid.Health = 0
 		end
 	end
 end)
@@ -853,10 +854,10 @@ FlingSection:NewTextBox("Fling something", "Flings a player / dummy!", function(
 end)
 
 FlingSection:NewTextBox("Fling something 10x", "Flings a player / dummy 10x!", function(text)
-	for i = 0, 10, 1 do
-		local char = player.Character
-		local charpos = char.HumanoidRootPart.Position
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
 
+	for i = 0, 10, 1 do
 		local subtext = get_player(text) or get_entity(text)
 		local targetplrstring = tostring(subtext)
 
@@ -1055,6 +1056,31 @@ GEModSection:NewButton("Max HP heal yourself", "Heals you to max HP!", function(
 	game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
 end)
 
+GEModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+	if toggle == true then
+		while wait() do
+			if toggle == false then
+				break
+			end
+
+			if char.Humanoid.Health <= 60 then
+				local args = {
+					[1] = true,
+					[2] = char.Humanoid,
+					[3] = math.huge,
+					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[7] = 10,
+					[8] = "rbxassetid://4567255304",
+					[9] = 10
+				}
+
+				game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
 GEModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", function()
 	local char = player.Character
 
@@ -1064,6 +1090,7 @@ GEModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", func
 			[2] = plr.Character.Humanoid,
 			[3] = math.huge,
 			[4] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[6] = 0,
 			[7] = 10,
 			[8] = "rbxassetid://4567255304",
 			[9] = 10
@@ -1089,6 +1116,7 @@ GEModSection:NewTextBox("MAX HP heal something", "Heal a player / dummy to MAX H
 		[2] = targethum,
 		[3] = math.huge,
 		[4] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[6] = 0,
 		[7] = 10,
 		[8] = "rbxassetid://4567255304",
 		[9] = 10
@@ -1146,6 +1174,20 @@ VTWModSection:NewButton("No cooldown knives", "Throws knives without cooldowns!"
 	}
 
 	game:GetService("ReplicatedStorage").Attacks.DioKnifeThrow:FireServer(unpack(args))
+end)
+
+VTWModSection:NewTextBox("No cooldown knives", "Throws a given amount of knives without cooldowns!", function(text)
+	local howmuchknives = tonumber(text)
+
+	for i = 0, howmuchknives, 1 do
+		local char = player.Character
+		
+		local args = {
+			[1] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0))
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.DioKnifeThrow:FireServer(unpack(args))
+	end
 end)
 
 VTWModSection:NewButton("No cooldown 21 sec TimeStop", "Stops time for 21 seconds without cooldown!", function()
@@ -1337,6 +1379,24 @@ end)
 VTWModSection:NewButton("Heal yourself", "Heals yourself with a vampire heal! (Faster heal.)", function()
 	for i = 0, 100, 1 do
 		game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
+	end
+end)
+
+VTWModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+
+	if toggle == true then
+		while wait() do
+			if char.Humanoid.Health <= 60 then
+				if toggle == false then
+					break
+				end
+				
+				for i = 0, 100, 1 do
+					game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
+				end
+			end
+		end
 	end
 end)
 
@@ -1551,6 +1611,33 @@ CDModSection:NewButton("MAX HP heal yourself", "Heals yourself to MAX HP!", func
 	game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
 end)
 
+CDModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+
+	if toggle == true then
+		while wait() do
+			if toggle == false then
+				break
+			end
+			
+			if char.Humanoid.Health <= 60 then
+				local args = {
+					[1] = char.Humanoid,
+					[2] = math.huge,
+					[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[4] = Vector3.new(0, 0, 0),
+					[5] = 0,
+					[6] = 1,
+					[7] = "rbxassetid://2914074987",
+					[8] = 2
+				}
+
+				game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
 CDModSection:NewButton("MAX HP heal everyone", "Heals everyone to MAX HP!", function()
 	for i, plr in pairs(game.Players:GetPlayers()) do
 		local args = {
@@ -1577,6 +1664,7 @@ CDModSection:NewTextBox("MAX HP heal something", "Heals a dummy / player to MAX 
 
 	local target = game.Workspace:FindFirstChild(targetplrstring)
 	local targethum = target.Humanoid
+	local targetpos = target.HumanoidRootPart.Position
 
 	local args = {
     	[1] = targethum,
@@ -1590,4 +1678,506 @@ CDModSection:NewTextBox("MAX HP heal something", "Heals a dummy / player to MAX 
 	}
 
 	game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+end)
+
+local TWOHModSection = StandModTab:NewSection("The World: Over Heaven")
+
+TWOHModSection:NewButton("No Cooldown Time Stop", "You can use the Time Stop without cooldown!", function()
+	local args = {
+    	[1] = 12,
+    	[2] = "DIO"
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Timestop:FireServer(unpack(args))
+end)
+
+TWOHModSection:NewButton("Overwrite everyone (No dmg, stun)", "Uses the overwrite type damage on everyone!", function()
+	local char = player.Character
+	local charpos = char:WaitForChild("HumanoidRootPart").Position
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			char:MoveTo(plr.Character.HumanoidRootPart.Position)
+
+			local args1 = {
+    			[1] = plr.Character.Humanoid,
+    			[2] = 0,
+    			[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+    			[4] = Vector3.new(0, 0, 0),
+				[5] = 0.25,
+				[6] = 2,
+				[7] = "rbxassetid://1202656211",
+				[8] = 2
+			}
+
+			local args2 = {
+				[1] = plr.Character
+			}
+
+			wait(0.2)
+
+			for i = 0, 5, 1 do
+				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+				game:GetService("ReplicatedStorage").Attacks.DamageOverwrite:FireServer(unpack(args1))
+			end
+		end
+	end
+
+	wait(0.2)
+	char:MoveTo(charpos)
+end)
+
+TWOHModSection:NewTextBox("Donut something (has cooldown)", "Donuts a dummy / player! (Has cooldowns.)", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+	
+	local args = {
+    	[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Donut:FireServer(unpack(args))
+end)
+
+TWOHModSection:NewButton("Bullet Kick everyone", "Bullet Kicks everyone! (Stuns everyone I guess.)", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= game.Players.LocalPlayer then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
+		end
+	end
+end)
+
+TWOHModSection:NewTextBox("Bullet Kick something", "Bullet Kicks a dummy / player! (More usable)", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
+end)
+
+TWOHModSection:NewButton("No cooldown Lightning Strike", "Uses Lightning Strike without cooldown!", function()
+	game:GetService("ReplicatedStorage").SpecialMoves.HeavenlyLightningStrike:FireServer()
+end)
+
+TWOHModSection:NewButton("No cooldown Knife Throw", "Throw knives without cooldown!", function()
+	game:GetService("ReplicatedStorage").Attacks.OverHeavenKnifeThrow:FireServer()
+end)
+
+TWOHModSection:NewTextBox("No cooldown Knife Throw", "Throws a given amount of knives without cooldown!", function(text)
+	local howmuchknives = tonumber(text)
+
+	for i = 0, howmuchknives, 1 do
+		game:GetService("ReplicatedStorage").Attacks.OverHeavenKnifeThrow:FireServer()
+	end
+end)
+
+TWOHModSection:NewButton("Max HP heal yourself", "Heals you to max HP!", function()
+	local char = player.Character
+	
+	local args = {
+		[1] = false,
+		[2] = char.Humanoid,
+		[3] = math.huge,
+		[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[7] = 1,
+		[8] = "rbxassetid://1202656211",
+		[9] = 2.5
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
+end)
+
+TWOHModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", function()
+	local char = player.Character
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		local args = {
+			[1] = false,
+			[2] = plr.Character.Humanoid,
+			[3] = math.huge,
+			[4] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[6] = 0,
+			[7] = 1,
+			[8] = "rbxassetid://1202656211",
+			[9] = 2.5
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
+	end
+end)
+
+TWOHModSection:NewTextBox("MAX HP heal something", "Heal a player / dummy to MAX HP!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	local args = {
+		[1] = false,
+		[2] = targethum,
+		[3] = math.huge,
+		[4] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[6] = 0,
+		[7] = 1,
+		[8] = "rbxassetid://1202656211",
+		[9] = 2.5
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
+end)
+
+TWOHModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+
+	if toggle == true then
+		while wait() do
+			if toggle == false then
+				break
+			end
+
+			if char.Humanoid.Health <= 60 then
+				local args = {
+					[1] = false,
+					[2] = char.Humanoid,
+					[3] = math.huge,
+					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[7] = 1,
+					[8] = "rbxassetid://1202656211",
+					[9] = 2.5
+				}
+
+				game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+
+local SCModSection = StandModTab:NewSection("Silver Chariot")
+
+SCModSection:NewButton("No cooldown Blade Shot", "Uses Blade Shot without cooldown!", function()
+	game:GetService("ReplicatedStorage").Attacks.SCBladeShoot:FireServer()
+end)
+
+local MRModSection = StandModTab:NewSection("Magicians Red")
+
+MRModSection:NewButton("Set everyone on fire", "Sets everyone on fire!", function()
+	local char = player.Character
+	local charpos = char:WaitForChild("HumanoidRootPart").Position
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			char:MoveTo(plr.Character.HumanoidRootPart.Position)
+
+			local args1 = {
+				[1] = plr.Character.Humanoid,
+				[2] = 0,
+				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+				[4] = Vector3.new(0, 0, 0),
+				[5] = 0,
+				[6] = 1.5,
+				[7] = "rbxassetid://260430079",
+				[8] = 3.6
+			}
+
+			local args2 = {
+				[1] = plr.Character
+			}
+
+			wait(0.2)
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+			game:GetService("ReplicatedStorage").Attacks.DamageFire:FireServer(unpack(args1))
+		end
+	end
+
+	wait(0.2)
+	char:MoveTo(charpos)
+end)
+
+MRModSection:NewButton("Set something on fire", "Sets a player / dummy on fire!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	char:MoveTo(targetpos)
+
+	local args1 = {
+		[1] = targethum,
+		[2] = 0,
+		[3] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[4] = Vector3.new(0, 0, 0),
+		[5] = 0,
+		[6] = 1.5,
+		[7] = "rbxassetid://260430079",
+		[8] = 3.6
+	}
+
+	local args2 = {
+		[1] = target
+	}
+
+	wait(0.2)
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+	game:GetService("ReplicatedStorage").Attacks.DamageFire:FireServer(unpack(args1))
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
+MRModSection:NewButton("Fake Fire Shockwave", "Uses a fake Fire Shockwave move! (Only effects, no damage.)", function()
+	local args = {
+		[1] = BrickColor.new(1014)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(1014)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(1014)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(133)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(133)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(133)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(1009)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(1009)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+
+	local args = {
+		[1] = BrickColor.new(1009)
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.CircleShockwave:FireServer(unpack(args))
+end)
+
+
+local GERModSection = StandModTab:NewSection("Golden Experience Requiem")
+
+GERModSection:NewButton("Max HP heal yourself", "Heals you to max HP!", function()
+	local char = player.Character
+	
+	local args = {
+		[1] = true,
+		[2] = char.Humanoid,
+		[3] = math.huge,
+		[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+		[7] = 10,
+		[8] = "rbxassetid://4567255304",
+		[9] = 10
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+end)
+
+GERModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+	if toggle == true then
+		while wait() do
+			if toggle == false then
+				break
+			end
+
+			if char.Humanoid.Health <= 60 then
+				local args = {
+					[1] = true,
+					[2] = char.Humanoid,
+					[3] = math.huge,
+					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[7] = 10,
+					[8] = "rbxassetid://4567255304",
+					[9] = 10
+				}
+
+				game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+GERModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", function()
+	local char = player.Character
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		local args = {
+			[1] = true,
+			[2] = plr.Character.Humanoid,
+			[3] = math.huge,
+			[4] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[6] = 0,
+			[7] = 10,
+			[8] = "rbxassetid://4567255304",
+			[9] = 10
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+	end
+end)
+
+GERModSection:NewTextBox("MAX HP heal something", "Heal a player / dummy to MAX HP!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targetpos = target.HumanoidRootPart.Position
+	local targethum = target.Humanoid
+
+	local args = {
+		[1] = true,
+		[2] = targethum,
+		[3] = math.huge,
+		[4] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[6] = 0,
+		[7] = 10,
+		[8] = "rbxassetid://4567255304",
+		[9] = 10
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+end)
+
+
+local WSModSection = StandModTab:NewSection("White Snake")
+
+WSModSection:NewButton("Shoot Gun without cooldown", "Shoots the Gun without cooldown!", function()
+	local args = {
+		[1] = true
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.BulletShoot:FireServer(unpack(args))
+end)
+
+WSModSection:NewButton("Take everyone's stand", "Takes everyone's stand!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").Attacks.Whitesnake.DiscRemoval:FireServer(unpack(args))
+		end
+	end
+end)
+
+WSModSection:NewTextBox("Take someone's stand", "Takes a specified player's stand!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Whitesnake.DiscRemoval:FireServer(unpack(args))
+end)
+
+WSModSection:NewButton("Take everyone's memory (slow)", "Takes everyone's memory! (Slows players down.)", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").Attacks.Whitesnake.MemoryDisc:FireServer(unpack(args))
+		end
+	end
+end)
+
+WSModSection:NewTextBox("Take someone's memory (slow)", "Takes everyone's memory! (Slows player down.)", function()
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Whitesnake.MemoryDisc:FireServer(unpack(args))
+end)
+
+WSModSection:NewButton("Fake Sleep", "Performs a fake Sleep", function()
+	local args = {
+    	[1] = true,
+    	[2] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Torso")
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.Whitesnake.AcidSleep:FireServer(unpack(args))
 end)
