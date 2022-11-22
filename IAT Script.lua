@@ -122,6 +122,43 @@ local function get_entity(name)
 	end
 end
 
+local function GEAutoHeal()
+	local char = player.Character
+
+	if char.Humanoid.Health <= 60 then
+		local args = {
+			[1] = char.Humanoid,
+			[2] = math.huge,
+			[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[4] = Vector3.new(0, 0, 0),
+			[5] = 0,
+			[6] = 1,
+			[7] = "rbxassetid://2914074987",
+			[8] = 2
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
+	end
+end
+
+local function TWOHAutoHeal()
+	local char = player.Character
+
+	if char.Humanoid.Health <= 60 then
+		local args = {
+			[1] = false,
+			[2] = char.Humanoid,
+			[3] = math.huge,
+			[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[7] = 1,
+			[8] = "rbxassetid://1202656211",
+			[9] = 2.5
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
+	end
+end
+
 
 --[[			MAIN PART			]]--
 
@@ -1059,25 +1096,12 @@ end)
 GEModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 	if toggle == true then
-		while wait() do
-			if toggle == false then
-				break
-			end
-
-			if char.Humanoid.Health <= 60 then
-				local args = {
-					[1] = true,
-					[2] = char.Humanoid,
-					[3] = math.huge,
-					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-					[7] = 10,
-					[8] = "rbxassetid://4567255304",
-					[9] = 10
-				}
-
-				game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
-			end
-		end
+		repeat
+			wait()
+			GEAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
@@ -1086,7 +1110,7 @@ GEModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", func
 
 	for i, plr in pairs(game.Players:GetPlayers()) do
 		local args = {
-			[1] = true,
+			[1] = false,
 			[2] = plr.Character.Humanoid,
 			[3] = math.huge,
 			[4] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
@@ -1112,7 +1136,7 @@ GEModSection:NewTextBox("MAX HP heal something", "Heal a player / dummy to MAX H
 	local targethum = target.Humanoid
 
 	local args = {
-		[1] = true,
+		[1] = false,
 		[2] = targethum,
 		[3] = math.huge,
 		[4] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
@@ -1727,6 +1751,45 @@ TWOHModSection:NewButton("Overwrite everyone (No dmg, stun)", "Uses the overwrit
 	char:MoveTo(charpos)
 end)
 
+TWOHModSection:NewButton("Overwrite something (No dmg, stun)", "Uses the overwrite type damage on a player / dummy!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	char:MoveTo(targetpos)
+
+	local args1 = {
+    	[1] = targethum,
+    	[2] = 0,
+    	[3] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+    	[4] = Vector3.new(0, 0, 0),
+		[5] = 0.25,
+		[6] = 2,
+		[7] = "rbxassetid://1202656211",
+		[8] = 2
+	}
+
+	local args2 = {
+		[1] = target
+	}
+
+	wait(0.2)
+
+	for i = 0, 5, 1 do
+		game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+		game:GetService("ReplicatedStorage").Attacks.DamageOverwrite:FireServer(unpack(args1))
+	end
+
+	wait(0.2)
+	char:MoveTo(charpos)
+end)
+
 TWOHModSection:NewTextBox("Donut something (has cooldown)", "Donuts a dummy / player! (Has cooldowns.)", function(text)
 	local char = player.Character
     local charpos = char.HumanoidRootPart.Position
@@ -1855,25 +1918,12 @@ TWOHModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX 
 	local char = player.Character
 
 	if toggle == true then
-		while wait() do
-			if toggle == false then
-				break
-			end
-
-			if char.Humanoid.Health <= 60 then
-				local args = {
-					[1] = false,
-					[2] = char.Humanoid,
-					[3] = math.huge,
-					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-					[7] = 1,
-					[8] = "rbxassetid://1202656211",
-					[9] = 2.5
-				}
-
-				game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
-			end
-		end
+		repeat
+			wait()
+			TWOHAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
@@ -2021,7 +2071,7 @@ GERModSection:NewButton("Max HP heal yourself", "Heals you to max HP!", function
 	local char = player.Character
 	
 	local args = {
-		[1] = true,
+		[1] = false,
 		[2] = char.Humanoid,
 		[3] = math.huge,
 		[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
@@ -2043,7 +2093,7 @@ GERModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX H
 
 			if char.Humanoid.Health <= 60 then
 				local args = {
-					[1] = true,
+					[1] = false,
 					[2] = char.Humanoid,
 					[3] = math.huge,
 					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
@@ -2063,7 +2113,7 @@ GERModSection:NewButton("Max HP heal everyone", "Heals everyone to MAX HP!", fun
 
 	for i, plr in pairs(game.Players:GetPlayers()) do
 		local args = {
-			[1] = true,
+			[1] = false,
 			[2] = plr.Character.Humanoid,
 			[3] = math.huge,
 			[4] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
@@ -2089,7 +2139,7 @@ GERModSection:NewTextBox("MAX HP heal something", "Heal a player / dummy to MAX 
 	local targethum = target.Humanoid
 
 	local args = {
-		[1] = true,
+		[1] = false,
 		[2] = targethum,
 		[3] = math.huge,
 		[4] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
