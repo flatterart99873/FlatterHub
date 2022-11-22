@@ -122,25 +122,6 @@ local function get_entity(name)
 	end
 end
 
-local function GEAutoHeal()
-	local char = player.Character
-
-	if char.Humanoid.Health <= 60 then
-		local args = {
-			[1] = char.Humanoid,
-			[2] = math.huge,
-			[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-			[4] = Vector3.new(0, 0, 0),
-			[5] = 0,
-			[6] = 1,
-			[7] = "rbxassetid://2914074987",
-			[8] = 2
-		}
-
-		game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
-	end
-end
-
 local function TWOHAutoHeal()
 	local char = player.Character
 
@@ -330,6 +311,16 @@ SelfFlingSection:NewButton("Fling yourself", "Flings you to your look direction!
 	}
 
 	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
+end)
+
+local StandSection = PlayerTab:NewSection("Stand")
+
+StandSection:NewToggle("Toggle stand visibility", "Toggles stands visibility! (Some moves glitch out.)", function(toggle)
+	if toggle == true then
+		player.Character.Stand:MoveTo(player.Character.HumanoidRootPart.Position)
+	else
+		player.Character.Humanoid.Health = 0
+	end
 end)
 
 
@@ -1096,12 +1087,25 @@ end)
 GEModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 	if toggle == true then
-		repeat
-			wait()
-			GEAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+		while wait() do
+			if toggle == false then
+				break
+			end
+
+			if char.Humanoid.Health <= 60 then
+				local args = {
+					[1] = false,
+					[2] = char.Humanoid,
+					[3] = math.huge,
+					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+					[7] = 10,
+					[8] = "rbxassetid://4567255304",
+					[9] = 10
+				}
+
+				game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+			end
+		end
 	end
 end)
 
@@ -1751,7 +1755,7 @@ TWOHModSection:NewButton("Overwrite everyone (No dmg, stun)", "Uses the overwrit
 	char:MoveTo(charpos)
 end)
 
-TWOHModSection:NewButton("Overwrite something (No dmg, stun)", "Uses the overwrite type damage on a player / dummy!", function(text)
+TWOHModSection:NewTextBox("Overwrite something (No dmg, stun)", "Uses the overwrite type damage on a player / dummy!", function(text)
 	local char = player.Character
     local charpos = char.HumanoidRootPart.Position
 
@@ -2230,4 +2234,397 @@ WSModSection:NewButton("Fake Sleep", "Performs a fake Sleep", function()
 	}
 
 	game:GetService("ReplicatedStorage").Attacks.Whitesnake.AcidSleep:FireServer(unpack(args))
+end)
+
+
+local SFModSection = StandModTab:NewSection("Sticky Fingers")
+
+SFModSection:NewButton("Zipper everyone", "Zippers everyone!", function()
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			char:MoveTo(plr.Character.HumanoidRootPart.Position)
+
+			local args = {
+				[1] = plr.Character.Humanoid,
+				[2] = 0,
+				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+				[4] = Vector3.new(0, 0, 0),
+				[5] = 0,
+				[6] = 1,
+				[7] = "rbxassetid://7107200898",
+				[8] = 1.8
+			}
+
+			wait(0.2)
+
+			for i = 0, 10, 1 do
+				game:GetService("ReplicatedStorage").Attacks.DamageStickyFingers:FireServer(unpack(args))
+			end
+		end
+	end
+
+	wait(0.2)
+
+	char:MoveTo(charpos)
+end)
+
+SFModSection:NewTextBox("Zipper something", "Zippers a dummy / player!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	char:MoveTo(targetpos)
+
+	local args = {
+		[1] = targethum,
+		[2] = 0,
+		[3] = CFrame.new(targetpos, Vector3.new(0, 0, 0)),
+		[4] = Vector3.new(0, 0, 0),
+		[5] = 0,
+		[6] = 1,
+		[7] = "rbxassetid://7107200898",
+		[8] = 1.8
+	}
+
+	for i = 0, 10, 1 do
+		game:GetService("ReplicatedStorage").Attacks.DamageStickyFingers:FireServer(unpack(args))
+	end
+end)
+
+SFModSection:NewButton("Beatdown everyone", "Beatdowns everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.StickyFingersBeatdown:FireServer(unpack(args))
+		end
+	end
+end)
+
+SFModSection:NewTextBox("Beatdown someone", "Beatdowns a player!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+	
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.StickyFingersBeatdown:FireServer(unpack(args))
+end)
+
+SFModSection:NewButton("Remove everyone's limbs", "Removes everyone's limbs!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = plr.Character
+			}
+
+			for i = 0, 10, 1 do
+				game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+SFModSection:NewTextBox("Remove something's limbs", "Removes a dummy's / player's limbs!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	for i = 0, 10, 1 do
+		game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
+	end
+end)
+
+SFModSection:NewToggle("Toggle glide effect", "Toggles Zipper Glide's effect!", function(toggle)
+	if toggle == true then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").ZipperTrail,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	else
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").ZipperTrail,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	end
+end)
+
+
+local VampModSection = StandModTab:NewSection("Vampire")
+
+VampModSection:NewButton("Space Ripper Stingy Eyes everyone", "Sends Space Ripper eyes to everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character.HumanoidRootPart.Position
+			}
+
+			game:GetService("ReplicatedStorage").Attacks.SpaceRipper:FireServer(unpack(args))
+		end
+	end
+end)
+
+VampModSection:NewTextBox("Space Ripper Stingy Eyes something", "Sends Space Ripper eyes to a dummy / player!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = targetpos
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.SpaceRipper:FireServer(unpack(args))
+end)
+
+VampModSection:NewButton("Ice Shatter everyone", "Uses Ice Shatter on everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.IceShatter:FireServer(unpack(args))
+		end
+	end
+end)
+
+VampModSection:NewTextBox("Ice Shatter something", "Ice Shatters a dummy / player!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.IceShatter:FireServer(unpack(args))
+end)
+
+VampModSection:NewButton("Pull everyone", "Brings / Pulls everyone to you!", function()
+	local char = player.Character
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character,
+    			[2] = 1,
+    			[3] = char.HumanoidRootPart.Position
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+		end
+	end
+end)
+
+VampModSection:NewTextBox("Pull / Bring something", "Pulls / Brings a dummy / player to you!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = target,
+    	[2] = 1,
+    	[3] = charpos
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+end)
+
+VampModSection:NewButton("Heal yourself", "Heals yourself with a vampire heal! (Faster heal.)", function()
+	for i = 0, 100, 1 do
+		game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
+	end
+end)
+
+VampModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+
+	if toggle == true then
+		while wait() do
+			if char.Humanoid.Health <= 60 then
+				if toggle == false then
+					break
+				end
+				
+				for i = 0, 100, 1 do
+					game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
+				end
+			end
+		end
+	end
+end)
+
+
+local HamonModSection = StandModTab:NewSection("Hamon")
+
+HamonModSection:NewButton("No cooldown Sendo", "Uses Sendo Overdrive without cooldown!", function()
+	local args = {
+		[1] = "SendoRipple"
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+end)
+
+HamonModSection:NewButton("Set everyone on fire", "Sets everyone on fire!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = "Fire",
+				[2] = plr.Character
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+HamonModSection:NewTextBox("Set something on fire", "Sets a player / dummy on fire!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = "Fire",
+		[2] = target
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+end)
+
+HamonModSection:NewToggle("Toggle fake Flame Fists", "Toggles fake Flame Fists", function(toggle)
+	if toggle == true then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand.RARM.Fire,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand.LARM.Fire,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	else
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand.RARM.Fire,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand.LARM.Fire,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	end
+end)
+
+HamonModSection:NewToggle("Toggle fake Pluck", "Toggles fake Pluck!", function(toggle)
+	if toggle == true then
+		local args = {
+			[1] = "TogglePluck",
+			[2] = true
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+	else
+		local args = {
+			[1] = "TogglePluck",
+			[2] = false
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+HamonModSection:NewButton("Pluck Pierce everyone", "Pierces everyone with Pluck!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = "Pierce",
+				[2] = plr.Character
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+HamonModSection:NewTextBox("Pluck Pierce something", "Pierces a player / dummy with Pluck!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = "Pierce",
+		[2] = target
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
 end)
