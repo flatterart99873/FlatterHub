@@ -182,6 +182,49 @@ ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or
 	end
 end)
 
+
+local SpawnsTab = Window:NewTab("NPC Spawns")
+
+for i, v in pairs(game.Workspace.Values:GetChildren()) do
+	if v.ClassName ~= "NumberValue" then
+		print("Instance:", v.Name.. ", ClassName:", v.ClassName.. ", Value:", v.Value)
+	end
+
+	if v.Name == "PucciSpawned" then
+		PucciSpawned = v.Value
+
+		v.Changed:Connect(function(value)
+			PucciSpawned = v.Value
+		end)
+	end
+
+	if v.Name == "ZeppeliSpawned" then
+		ZeppeliSpawned = v.Value
+
+		v.Changed:Connect(function(value)
+			ZeppeliSpawned = v.Value
+		end)
+	end
+
+	if v.Name == "KarsSpawned" then
+		KarsSpawned = v.Value
+
+		v.Changed:Connect(function(value)
+			KarsSpawned = v.Value
+		end)
+	end
+end
+
+local NPCSpawnsSection = SpawnsTab:NewSection("NPC Spawns")
+
+local PucciSpawnedLabel = NPCSpawnsSection:NewLabel("Pucci spawned:")
+local KarsSpawnedLabel = NPCSpawnsSection:NewLabel("Kars spawned:")
+local ZeppeliSpawnedLabel = NPCSpawnsSection:NewLabel("Zeppeli spawned:")
+
+PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. PucciSpawned)
+KarsSpawnedLabel:UpdateLabel("Kars spawned: ".. KarsSpawned)
+ZeppeliSpawnedLabel:UpdateLabel("Zeppeli spawned: ".. ZeppeliSpawned)
+
 local TeleportsTab = Window:NewTab("Teleports")
 
 local TPsSection = TeleportsTab:NewSection("NPC / Player teleports")
@@ -269,34 +312,26 @@ ToggleGuiSection:NewKeybind("KeybindText", "KeybindInfo", Enum.KeyCode.LeftContr
 end)
 
 local PlayerTab = Window:NewTab("Player")
-local PlayerSection = PlayerTab:NewSection("WalkSpeed / JumpPower")
+local MovementSection = PlayerTab:NewSection("Movement (Walkspeed, JumpPower)")
 
-PlayerSection:NewSlider("WalkSpeed", "Changes walk speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+MovementSection:NewSlider("WalkSpeed", "Changes walk speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     local char = player.Character
 	char.Humanoid.WalkSpeed = s
 end)
 
-PlayerSection:NewSlider("JumpPower", "Changes jump power", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+MovementSection:NewSlider("JumpPower", "Changes jump power", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     local char = player.Character
 	char.Humanoid.JumpPower = s
 end)
 
-local ResetSection = PlayerTab:NewSection("Reset")
+local CharacterSection = PlayerTab:NewSection("Character")
 
-ResetSection:NewButton("Reset", "Reset your character instantly", function()
+CharacterSection:NewButton("Reset", "Reset your character instantly", function()
     local char = player.Character
 	char.Humanoid.Health = 0
 end)
 
-local AdminSection = PlayerTab:NewSection("Admin GUI")
-
-AdminSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield", function()
-   loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-end)
-
-local SelfFlingSection = PlayerTab:NewSection("Self fling")
-
-SelfFlingSection:NewButton("Fling yourself", "Flings you to your look direction!", function()
+CharacterSection:NewButton("Fling yourself", "Flings you to your look direction!", function()
 	local char = player.Character
 	
 	local args = {
@@ -313,14 +348,122 @@ SelfFlingSection:NewButton("Fling yourself", "Flings you to your look direction!
 	game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
 end)
 
-local StandSection = PlayerTab:NewSection("Stand")
-
-StandSection:NewToggle("Toggle stand visibility", "Toggles stands visibility! (Some moves glitch out.)", function(toggle)
+CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles a server sided CHARACTER INVISIBILITY!!", function(toggle)
 	if toggle == true then
-		player.Character.Stand:MoveTo(player.Character.HumanoidRootPart.Position)
+		for i = 0, 1, 0.1 do
+			wait()
+			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+				if v:IsA("Part") and v.Name ~= "HumanoidRootPart" then
+					local args = {
+						[1] = v,
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
+			end
+
+			local args = {
+				[1] = game.Players.LocalPlayer.Character.Head.face,
+				[2] = i
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
 	else
-		player.Character.Humanoid.Health = 0
+		for i = 1, 0, -0.1 do
+			wait()
+			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+				if v:IsA("Part") and v.Name ~= "HumanoidRootPart" then
+					local args = {
+						[1] = v,
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
+			end
+
+			local args = {
+				[1] = game.Players.LocalPlayer.Character.Head.face,
+				[2] = i
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
 	end
+end)
+
+CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a server sided STAND INVISIBILITY!!", function(toggle)
+	if toggle == true then
+		for i = 0, 1, 0.1 do
+			wait()
+			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetChildren()) do
+				if v:IsA("Part") or "MeshPart" and v.Name ~= "Stand HumanoidRootPart" then
+					local args = {
+						[1] = v,
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
+
+				if v:FindFirstChild("Stand Aura") then
+					local args = {
+						[1] = v:FindFirstChild("Stand Aura"),
+						[2] = false
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+				end
+			end
+
+			local args = {
+				[1] = v:FindFirstChild("face"),
+				[2] = i
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
+	else
+		for i = 1, 0, -0.1 do
+			wait()
+			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetChildren()) do
+				if v:IsA("Part") or "MeshPart" and v.Name ~= "Stand HumanoidRootPart" then
+					local args = {
+						[1] = v,
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
+
+				if v:FindFirstChild("Stand Aura") then
+					v:FindFirstChild("Stand Aura")
+
+					local args = {
+						[1] = v:FindFirstChild("Stand Aura"),
+						[2] = true
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+				end
+			end
+
+			local args = {
+				[1] = v:FindFirstChild("face"),
+				[2] = i
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
+	end
+end)
+
+local AdminSection = PlayerTab:NewSection("Admin GUI")
+
+AdminSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield", function()
+   loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
 
 
@@ -355,6 +498,7 @@ CombatSection:NewButton("Kill all players", "Kills all players!", function()
 
 			for i = 0, 5, 1 do
 				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+				wait()
 				game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 			end
 		end
@@ -409,7 +553,7 @@ CombatSection:NewButton("Multiply Stand", "Multiplies your stand, USE IT WITHOUT
 	GiveStand:FireServer()
 end)
 
-CombatSection:NewToggle("Toggle GOD MODE", "Toggles god mode!", function(toggle)
+CombatSection:NewToggle("Toggle GOD MODE", "Toggles GOD MODE!! (Some moves still can hit.)", function(toggle)
 	if toggle == true then
 		local char = player.Character
 
