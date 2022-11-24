@@ -174,6 +174,12 @@ local ItemTPsSection = ItemsTab:NewSection("Pick up all tools")
 ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or Dio's diary or Dio's Bone", function()
 	local char = player.Character
 	for i, tool in pairs(game.Workspace:GetChildren()) do
+		if tool.ClassName == "Tool" and tool.Name == "Clock" then
+			tool:Destroy()
+		end
+	end
+
+	for i, tool in pairs(game.Workspace:GetChildren()) do
 		if tool.ClassName == "Tool" then
 			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
 			char:MoveTo(ToolPart.Position)
@@ -221,9 +227,11 @@ local PucciSpawnedLabel = NPCSpawnsSection:NewLabel("Pucci spawned:")
 local KarsSpawnedLabel = NPCSpawnsSection:NewLabel("Kars spawned:")
 local ZeppeliSpawnedLabel = NPCSpawnsSection:NewLabel("Zeppeli spawned:")
 
-PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. PucciSpawned)
-KarsSpawnedLabel:UpdateLabel("Kars spawned: ".. KarsSpawned)
-ZeppeliSpawnedLabel:UpdateLabel("Zeppeli spawned: ".. ZeppeliSpawned)
+game:GetService("RunService").Heartbeat:Connect(function()
+	PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. tostring(PucciSpawned))
+	KarsSpawnedLabel:UpdateLabel("Kars spawned: ".. tostring(KarsSpawned))
+	ZeppeliSpawnedLabel:UpdateLabel("Zeppeli spawned: ".. tostring(ZeppeliSpawned))
+end)
 
 local TeleportsTab = Window:NewTab("Teleports")
 
@@ -1300,6 +1308,15 @@ end)
 
 local SPModSection = StandModTab:NewSection("Star Platinum")
 
+SPModSection:NewButton("No cooldown 7 sec Time Stop", "Uses a 7 sec Time Stop without cooldown!", function()
+	local args = {
+		[1] = 7,
+		[2] = "Jotaro"
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Timestop:FireServer(unpack(args))
+end)
+
 SPModSection:NewButton("Bring everyone", "Brings everyone to you!", function()
     for i, plr in pairs(game.Players:GetPlayers()) do
         if plr ~= player then
@@ -2118,7 +2135,7 @@ MRModSection:NewButton("Set everyone on fire", "Sets everyone on fire!", functio
 	char:MoveTo(charpos)
 end)
 
-MRModSection:NewButton("Set something on fire", "Sets a player / dummy on fire!", function(text)
+MRModSection:NewTextBox("Set something on fire", "Sets a player / dummy on fire!", function(text)
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
@@ -2771,4 +2788,234 @@ HamonModSection:NewTextBox("Pluck Pierce something", "Pierces a player / dummy w
 	}
 
 	game:GetService("Players").LocalPlayer.Backpack.Hamon.HamonLocalisedRemote:FireServer(unpack(args))
+end)
+
+
+local TWModSection = StandModTab:NewSection("The World")
+
+TWModSection:NewButton("No cooldown 6 sec Time Stop", "Uses 6 sec Time Stop without cooldowns!", function()
+	local args = {
+		[1] = 6,
+		[2] = "DIO"
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Timestop:FireServer(unpack(args))
+end)
+
+TWModSection:NewButton("Bleed everyone 10x", "Bleeds everyone 10 times!", function()
+	for i = 0, 10, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			if plr ~= player then
+				local args = {
+					[1] = "Bleed",
+					[2] = plr.Character
+				}
+
+				game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The World").TWLocalisedRemote:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+TWModSection:NewTextBox("Bleed something 10x", "Bleeds a player / dummy 10 times!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	for i = 0, 10, 1 do
+		local args = {
+			[1] = "Bleed",
+			[2] = target
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The World").TWLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+TWModSection:NewButton("Pull everyone for 0.5 secs", "Pulls everyone to you for 0.5 secs!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = "Hold",
+				[2] = plr.Character,
+				[3] = 0.5
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The World").TWLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+TWModSection:NewTextBox("Pull everyone for given seconds!", "Pulls everyone for given seconds!", function(text)
+	local stun = tonumber(text)
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = "Hold",
+				[2] = plr.Character,
+				[3] = stun
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The World").TWLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+TWModSection:NewTextBox("Pull someone for 2 secs", "Pulls a player for 2 seconds!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = "Hold",
+		[2] = target,
+		[3] = 2
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The World").TWLocalisedRemote:FireServer(unpack(args))
+end)
+
+TWModSection:NewButton("No cooldown knife throw", "Throws knives without cooldown!", function()
+	local args = {
+		[1] = CFrame.new(Vector3.new(0, 0, 0), Vector3.new(0, 0, 0))
+	}
+
+	game:GetService("ReplicatedStorage").Attacks.DioKnifeThrow:FireServer(unpack(args))
+end)
+
+TWModSection:NewTextBox("Throw given amount of knives", "Throws a given amount of knives without cooldowns!", function(amount)
+	local howmuchknives = tonumber(amount)
+	for i = 0, howmuchknives, 1 do
+		local args = {
+			[1] = CFrame.new(Vector3.new(0, 0, 0), Vector3.new(0, 0, 0))
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.DioKnifeThrow:FireServer(unpack(args))
+	end
+end)
+
+TWModSection:NewTextBox("Donut something (has cooldown)", "Donuts a dummy / player! (Has cooldowns.)", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+	
+	local args = {
+    	[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Donut:FireServer(unpack(args))
+end)
+
+TWModSection:NewButton("Bullet Kick everyone", "Bullet Kicks everyone! (Stuns everyone I guess.)", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= game.Players.LocalPlayer then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
+		end
+	end
+end)
+
+TWModSection:NewTextBox("Bullet Kick something", "Bullet Kicks a dummy / player! (More usable)", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.BulletKick:FireServer(unpack(args))
+end)
+
+TWModSection:NewToggle("Toggle Sign (No damage)", "Toggles Sign! (Doesn't do any damage.)", function(toggle)
+	local char = player.Character
+	if toggle == true then
+		for i, part in pairs(char:WaitForChild("SignArm").Sign:GetChildren()) do
+			local args = {
+				[1] = part,
+				[2] = 0
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+
+		end
+	else
+		for i, part in pairs(char:WaitForChild("SignArm").Sign:GetChildren()) do
+			local args = {
+				[1] = part,
+				[2] = 1
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
+	end
+end)
+
+
+local THModSection = StandModTab:NewSection("The Hand")
+
+THModSection:NewButton("Pull closest players", "Pulls closest players!", function()
+	local args = {
+		[1] = "Pull",
+		[2] = 50
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The Hand").THLocalisedRemote:FireServer(unpack(args))
+end)
+
+THModSection:NewButton("No cooldown Beatdown everyone", "Beatdowns everyone without cooldown!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = plr.Character
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.TheHandBeatdown:FireServer(unpack(args))
+		end
+	end
+end)
+
+THModSection:NewTextBox("No cooldown Beatdown something", "Beatdowns a player / dummy without cooldown!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+		[1] = target
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.TheHandBeatdown:FireServer(unpack(args))
 end)
