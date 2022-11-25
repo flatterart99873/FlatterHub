@@ -3,6 +3,7 @@ local char = player.Character
 
 local IntroScreenGui = Instance.new("ScreenGui", player.PlayerGui)
 IntroScreenGui.Name = "IntroScreenGui"
+IntroScreenGui.ResetOnSpawn = false
 
 wait(1)
 
@@ -56,6 +57,8 @@ local StandsTable = {
 	"King Crimson",
 	"Gold Experience"
 }
+
+_G.ArrowsUsed = 0
 
 --[[			LIBRARY FUNCTIONS
 	
@@ -220,11 +223,11 @@ end
 local InfoTab = Window:NewTab("Info (MUST READ!)")
 
 local Section = InfoTab:NewSection("-- Script Owners --")
-local Section = InfoTab:NewSection("Script Owner: flatterart99873")
-local Section = InfoTab:NewSection("Script / Asset helper: yba_jojo7")
-local Section = InfoTab:NewSection("Gui Owner: KavoUI")
+local Label = Section:NewLabel("Script Owner: flatterart99873")
+local Label = Section:NewLabel("Script / Asset helper: yba_jojo7")
+local Label = Section:NewLabel("Gui Owner: KavoUI")
 
-local DisclaimerSection = InfoTab:NewSection("Disclaimers")
+local DisclaimerSection = InfoTab:NewSection("-- Disclaimers --")
 
 DisclaimerSection:NewLabel("Enter the players name, not nickname in textboxes!")
 DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
@@ -232,7 +235,7 @@ DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, it's just there.
 DisclaimerSection:NewLabel('"Something" means a player or dummy.')
 DisclaimerSection:NewLabel("If you use this GUI often, you are likely to get a ban!")
 
-local RulesSection = InfoTab:NewSection("Rules")
+local RulesSection = InfoTab:NewSection("-- Rules --")
 
 RulesSection:NewLabel("Please don't spam things to keep it working!")
 RulesSection:NewLabel("Use this GUI wisely.")
@@ -575,6 +578,13 @@ end)
 
 local CurrentStandLabel = StandFarmSection:NewLabel("Current Stand: ".. player:WaitForChild("Data"):WaitForChild("AbilityName").Value)
 
+local ArrowsUsedLabel = StandFarmSection:NewLabel("Arrows used: ".. _G.ArrowsUsed)
+
+StandFarmSection:NewButton("Reset Arrows used counter", "Resets the Arrows used counter to 0!", function()
+	_G.ArrowsUsed = 0
+	ArrowsUsedLabel:UpdateLabel("Arrows used: ".. _G.ArrowsUsed)
+end)
+
 game:GetService("RunService").Heartbeat:Connect(function()
 	CurrentStandLabel:UpdateLabel("Current Stand: ".. player:WaitForChild("Data"):WaitForChild("AbilityName").Value)
 end)
@@ -586,46 +596,47 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 	shared.FarmStand = toggle
 	
 	while shared.FarmStand do
-		wait()
 		if player.Data.AbilityName.Value == _G.StandToFarm then
 			StandFarmToggler:UpdateToggle("Stand already acquired!")
 			shared.FarmStand = false
-			wait(2)
+			task.wait(2)
 			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
 
 		repeat
-			wait(6)
-			pcall(function()
-				GetArrow(true)
+			GetArrow(true)
 
-				if char:FindFirstChild("Stand Arrow") then
-					if player.PlayerGui.ToolGui.Arrow.Visible == true then
-						for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetDescendants()) do
-							if v.Name == "Yes" then
-								v.Parent = player.PlayerGui.ToolGui
+			if char:FindFirstChild("Stand Arrow") then
+				if player.PlayerGui.ToolGui.Arrow.Visible == true then
+					for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetDescendants()) do
+						if v.Name == "Yes" then
+							v.Parent = player.PlayerGui.ToolGui
 
-								if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
-									v.Position = UDim2.new(0, 0, 0, 0)
-									v.TextTransparency = 1
-								end
+							if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
+								v.Position = UDim2.new(0, 0, 0, 0)
+								v.TextTransparency = 1
 							end
 						end
+					end
 
-						if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
-							game:GetService("VirtualUser"):ClickButton1(Vector2.new(player.PlayerGui.ToolGui.Yes.Position))
-						end
+					if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
+						game:GetService("VirtualUser"):ClickButton1(Vector2.new(player.PlayerGui.ToolGui.Yes.Position))
+						_G.ArrowsUsed = _G.ArrowsUsed + 1
+						ArrowsUsedLabel:UpdateLabel("Arrows used: ".. _G.ArrowsUsed)
 					end
 				end
-			end)
+			end
+
+			wait(5)
 		until not shared.FarmStand or player.Data.AbilityName.Value == _G.StandToFarm
 
 		if player.Data.AbilityName == _G.StandToFarm then
-			StandFarmToggler:UpdateLabel(_G.StandToFarm.. "acquired!")
+			StandFarmToggler:UpdateToggle(_G.StandToFarm.. "acquired!")
 			shared.FarmStand = false
-			wait(5)
-			StandFarmToggler:UpdateLabel("Farm Stand")
+			task.wait(2)
+			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
+		wait(5)
 	end
 end)
 
