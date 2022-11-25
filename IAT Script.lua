@@ -43,6 +43,19 @@ IntroScreenGui:Destroy()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("In Another Time GUI", "GrapeTheme")
 
+local StandsTable = {
+	"Star Platinum",
+	"The World",
+	"Sticky Fingers",
+	"Crazy Diamond",
+	"Whitesnake",
+	"Star Platinum: The World",
+	"Silver Chariot",
+	"Magicians Red",
+	"The Hand",
+	"King Crimson"
+}
+
 --[[			LIBRARY FUNCTIONS
 	
 	-- Kavo
@@ -122,6 +135,37 @@ local function get_entity(name)
 	end
 end
 
+local function GetArrow(val)
+	local char = player.Character
+	local backpack = player.Backpack
+
+	if val == true then
+		if backpack:FindFirstChild("Stand Arrow") == nil then
+			game:GetService("ReplicatedStorage").ItemGiver.GiveArrow:FireServer()
+		elseif char:FindFirstChild("Stand Arrow") == nil then
+			char.Humanoid:EquipTool(backpack:FindFirstChild("Stand Arrow"))
+		end
+	end
+end
+
+local function GEAutoHeal()
+	local char = player.Character
+
+	if char.Humanoid.Health <= 60 then
+		local args = {
+			[1] = false,
+			[2] = char.Humanoid,
+			[3] = math.huge,
+			[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[7] = 10,
+			[8] = "rbxassetid://4567255304",
+			[9] = 10
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
+	end
+end
+
 local function TWOHAutoHeal()
 	local char = player.Character
 
@@ -137,6 +181,35 @@ local function TWOHAutoHeal()
 		}
 
 		game:GetService("ReplicatedStorage").Attacks.Heal.OverHeavenHeal:FireServer(unpack(args))
+	end
+end
+
+local function VTWAutoHeal()
+	local char = player.Character
+
+	if char.Humanoid.Health <= 60 then
+		for i = 0, 100, 1 do
+			game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
+		end
+	end
+end
+
+local function CDAutoHeal()
+	local char = player.Character
+
+	if char.Humanoid.Health <= 60 then
+		local args = {
+			[1] = char.Humanoid,
+			[2] = math.huge,
+			[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+			[4] = Vector3.new(0, 0, 0),
+			[5] = 0,
+			[6] = 1,
+			[7] = "rbxassetid://2914074987",
+			[8] = 2
+		}
+
+		game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
 	end
 end
 
@@ -475,8 +548,90 @@ AdminSection:NewButton("Infinite yield (Nearly admin script)", "Infinite yield",
 end)
 
 
+local StandFarmTab = Window:NewTab("Stand Farm")
+
+local StandFarmSection = StandFarmTab:NewSection("Stand Farm")
+
+StandFarmSection:NewDropdown("Stand to farm", "Select the stand you want to get!", StandsTable, function(currentoption)
+	_G.StandToFarm = currentoption
+end)
+
+local CurrentStandLabel = StandFarmSection:NewLabel("Current Stand: ".. player:WaitForChild("Data"):WaitForChild("AbilityName").Value)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+	CurrentStandLabel:UpdateLabel("Current Stand: ".. player:WaitForChild("Data"):WaitForChild("AbilityName").Value)
+end)
+
+local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the selected stand!", function(toggle)
+	local char = player.Character
+	local backpack = player.Backpack
+
+	shared.FarmStand = toggle
+	
+	if shared.FarmStand then
+		if player.Data.AbilityName.Value == _G.StandToFarm then
+			StandFarmToggler:UpdateToggle("Stand already acquired!")
+			shared.FarmStand = false
+			wait(2)
+			StandFarmToggler:UpdateToggle("Farm Stand")
+			return
+		end
+
+		repeat
+			wait(6)
+			pcall(function()
+				GetArrow(true)
+
+				if char:FindFirstChild("Stand Arrow") then
+					if player.PlayerGui.ToolGui.Arrow.Visible == true then
+						for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetDescendants()) do
+							if v.Name == "Yes" then
+								v.Parent = player.PlayerGui.ToolGui
+
+								if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
+									v.Position = UDim2.new(0, 0, 0, 0)
+									v.TextTransparency = 1
+								end
+							end
+						end
+
+						if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
+							game:GetService("VirtualUser"):ClickButton1(Vector2.new(player.PlayerGui.ToolGui.Yes.Position))
+						end
+					end
+				end
+			end)
+		until not toggle or player.Data.AbilityName.Value == _G.StandToFarm
+
+		if player.Data.AbilityName == _G.StandToFarm then
+			StandFarmToggler:UpdateLabel(_G.StandToFarm.. "acquired!")
+			shared.FarmStand = false
+			wait(5)
+			StandFarmToggler:UpdateLabel("Farm Stand")
+		end
+	end
+end)
+
+
+local ReadMeTab = Window:NewTab("Disclaimers (MUST READ!)")
+
+local DisclaimerSection = ReadMeTab:NewSection("Disclaimers")
+
+DisclaimerSection:NewLabel("Enter the players name, not nickname in textboxes!")
+DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
+DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, they're just there.")
+DisclaimerSection:NewLabel('"Something" means a player or dummy.')
+DisclaimerSection:NewLabel("If you use this GUI often, you are likely to get banned!")
+
+local RulesSection = ReadMeTab:NewSection("Rules")
+
+RulesSection:NewLabel("Please don't spam things to keep it working!")
+RulesSection:NewLabel("Use this GUI wisely.")
+DisclaimerSection:NewLabel("Have fun!")
+
+
+
 local CombatTab = Window:NewTab("Combat")
-local Disclaimer = CombatTab:NewSection("DISCLAIMER: Enter the name not the nickname!")
 local CombatSection = CombatTab:NewSection("Combat Mod")
 
 CombatSection:NewButton("Kill all players", "Kills all players!", function()
@@ -1238,26 +1393,14 @@ end)
 
 GEModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
+
 	if toggle == true then
-		while wait() do
-			if toggle == false then
-				break
-			end
-
-			if char.Humanoid.Health <= 60 then
-				local args = {
-					[1] = false,
-					[2] = char.Humanoid,
-					[3] = math.huge,
-					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-					[7] = 10,
-					[8] = "rbxassetid://4567255304",
-					[9] = 10
-				}
-
-				game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
-			end
-		end
+		repeat
+			wait()
+			GEAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
@@ -1575,17 +1718,12 @@ VTWModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX H
 	local char = player.Character
 
 	if toggle == true then
-		while wait() do
-			if char.Humanoid.Health <= 60 then
-				if toggle == false then
-					break
-				end
-				
-				for i = 0, 100, 1 do
-					game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
-				end
-			end
-		end
+		repeat
+			wait()
+			VTWAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
@@ -1804,26 +1942,12 @@ CDModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP
 	local char = player.Character
 
 	if toggle == true then
-		while wait() do
-			if toggle == false then
-				break
-			end
-			
-			if char.Humanoid.Health <= 60 then
-				local args = {
-					[1] = char.Humanoid,
-					[2] = math.huge,
-					[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-					[4] = Vector3.new(0, 0, 0),
-					[5] = 0,
-					[6] = 1,
-					[7] = "rbxassetid://2914074987",
-					[8] = 2
-				}
-
-				game:GetService("ReplicatedStorage").Attacks.Heal.CDHeal:FireServer(unpack(args))
-			end
-		end
+		repeat
+			wait()
+			CDAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
@@ -2251,25 +2375,12 @@ end)
 GERModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 	if toggle == true then
-		while wait() do
-			if toggle == false then
-				break
-			end
-
-			if char.Humanoid.Health <= 60 then
-				local args = {
-					[1] = false,
-					[2] = char.Humanoid,
-					[3] = math.huge,
-					[4] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-					[7] = 10,
-					[8] = "rbxassetid://4567255304",
-					[9] = 10
-				}
-
-				game:GetService("ReplicatedStorage").Attacks.Heal.GEHeal:FireServer(unpack(args))
-			end
-		end
+		repeat
+			wait()
+			GEAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
@@ -2651,17 +2762,12 @@ VampModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX 
 	local char = player.Character
 
 	if toggle == true then
-		while wait() do
-			if char.Humanoid.Health <= 60 then
-				if toggle == false then
-					break
-				end
-				
-				for i = 0, 100, 1 do
-					game:GetService("ReplicatedStorage").SpecialMoves.VampireHeal:FireServer()
-				end
-			end
-		end
+		repeat
+			wait()
+			VTWAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
 
