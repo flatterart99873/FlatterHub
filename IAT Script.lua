@@ -53,7 +53,8 @@ local StandsTable = {
 	"Silver Chariot",
 	"Magicians Red",
 	"The Hand",
-	"King Crimson"
+	"King Crimson",
+	"Gold Experience"
 }
 
 --[[			LIBRARY FUNCTIONS
@@ -216,11 +217,27 @@ end
 
 --[[			MAIN PART			]]--
 
-local CreditsTab = Window:NewTab("Credits")
-local Section = CreditsTab:NewSection("-- Script Owners --")
-local Section = CreditsTab:NewSection("Script Owner: flatterart99873")
-local Section = CreditsTab:NewSection("Script / Asset helper: yba_jojo7")
-local Section = CreditsTab:NewSection("Gui Owner: KavoUI")
+local InfoTab = Window:NewTab("Info (MUST READ!)")
+
+local Section = InfoTab:NewSection("-- Script Owners --")
+local Section = InfoTab:NewSection("Script Owner: flatterart99873")
+local Section = InfoTab:NewSection("Script / Asset helper: yba_jojo7")
+local Section = InfoTab:NewSection("Gui Owner: KavoUI")
+
+local DisclaimerSection = InfoTab:NewSection("Disclaimers")
+
+DisclaimerSection:NewLabel("Enter the players name, not nickname in textboxes!")
+DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
+DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, it's just there.")
+DisclaimerSection:NewLabel('"Something" means a player or dummy.')
+DisclaimerSection:NewLabel("If you use this GUI often, you are likely to get a ban!")
+
+local RulesSection = InfoTab:NewSection("Rules")
+
+RulesSection:NewLabel("Please don't spam things to keep it working!")
+RulesSection:NewLabel("Use this GUI wisely.")
+RulesSection:NewLabel("Have fun!")
+
 
 local ItemsTab = Window:NewTab("Items")
 local ItemsSection = ItemsTab:NewSection("Get arrow")
@@ -568,13 +585,13 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 
 	shared.FarmStand = toggle
 	
-	if shared.FarmStand then
+	while shared.FarmStand do
+		wait()
 		if player.Data.AbilityName.Value == _G.StandToFarm then
 			StandFarmToggler:UpdateToggle("Stand already acquired!")
 			shared.FarmStand = false
 			wait(2)
 			StandFarmToggler:UpdateToggle("Farm Stand")
-			return
 		end
 
 		repeat
@@ -601,7 +618,7 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 					end
 				end
 			end)
-		until not toggle or player.Data.AbilityName.Value == _G.StandToFarm
+		until not shared.FarmStand or player.Data.AbilityName.Value == _G.StandToFarm
 
 		if player.Data.AbilityName == _G.StandToFarm then
 			StandFarmToggler:UpdateLabel(_G.StandToFarm.. "acquired!")
@@ -611,24 +628,6 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 		end
 	end
 end)
-
-
-local ReadMeTab = Window:NewTab("Disclaimers (MUST READ!)")
-
-local DisclaimerSection = ReadMeTab:NewSection("Disclaimers")
-
-DisclaimerSection:NewLabel("Enter the players name, not nickname in textboxes!")
-DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
-DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, they're just there.")
-DisclaimerSection:NewLabel('"Something" means a player or dummy.')
-DisclaimerSection:NewLabel("If you use this GUI often, you are likely to get banned!")
-
-local RulesSection = ReadMeTab:NewSection("Rules")
-
-RulesSection:NewLabel("Please don't spam things to keep it working!")
-RulesSection:NewLabel("Use this GUI wisely.")
-DisclaimerSection:NewLabel("Have fun!")
-
 
 
 local CombatTab = Window:NewTab("Combat")
