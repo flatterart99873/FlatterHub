@@ -638,7 +638,7 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 	if toggle == true then
 		if game.Workspace:FindFirstChild("FarmPart") == nil then
 			FarmPart = Instance.new("Part", game.Workspace)
-			FarmPart.Size = Vector3.new(15, 1, 15)
+			FarmPart.Size = Vector3.new(100, 1, 100)
 			FarmPart.Position = Vector3.new(-10000, 5000, -10000)
 			FarmPart.Transparency = 0.5
 			FarmPart.Anchored = true
@@ -660,6 +660,8 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 			local char = player.Character
 			local backpack = player.Backpack
 			GetArrow(true, char, backpack)
+
+			char:MoveTo(FarmPart.Position)
 
 			wait(0.2)
 
