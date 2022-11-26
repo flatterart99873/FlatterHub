@@ -139,14 +139,14 @@ local function get_entity(name)
 	end
 end
 
-local function GetArrow(val)
-	local char = player.Character
-	local backpack = player.Backpack
-
+local function GetArrow(val, char, backpack)
 	if val == true then
-		if backpack:FindFirstChild("Stand Arrow") == nil then
+		if backpack:FindFirstChild("Stand Arrow") == nil and char:FindFirstChild("Stand Arrow") == nil then
 			game:GetService("ReplicatedStorage").ItemGiver.GiveArrow:FireServer()
-		elseif char:FindFirstChild("Stand Arrow") == nil then
+			wait(0.2)
+		end
+
+		if char:FindFirstChild("Stand Arrow") == nil then
 			char.Humanoid:EquipTool(backpack:FindFirstChild("Stand Arrow"))
 		end
 	end
@@ -245,7 +245,7 @@ RulesSection:NewLabel("Have fun!")
 local ItemsTab = Window:NewTab("Items")
 local ItemsSection = ItemsTab:NewSection("Get arrow")
 
-ItemsSection:NewButton("Get Arrow", "Gives you a normal arrow from the shop", function()
+ItemsSection:NewButton("Get Arrow", "Gives you a normal arrow from the shop!", function()
 	local GiveArrow = game:GetService("ReplicatedStorage").ItemGiver.GiveArrow
 	GiveArrow:FireServer()
 end)
@@ -317,8 +317,25 @@ end
 local NPCSpawnsSection = SpawnsTab:NewSection("NPC Spawns")
 
 local PucciSpawnedLabel = NPCSpawnsSection:NewLabel("Pucci spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Pucci", "Teleports you to Pucci!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
+end)
+
 local KarsSpawnedLabel = NPCSpawnsSection:NewLabel("Kars spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Kars", "Teleports you to Kars!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Kars").HumanoidRootPart.Position)
+end)
+
 local ZeppeliSpawnedLabel = NPCSpawnsSection:NewLabel("Zeppeli spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Zeppeli", "Teleports you to Zeppeli!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Anthonio Zeppeli").HumanoidRootPart.Position)
+end)
 
 game:GetService("RunService").Heartbeat:Connect(function()
 	PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. tostring(PucciSpawned))
@@ -408,6 +425,7 @@ end)
 
 local ToggleGuiTab = Window:NewTab("Toggle GUI")
 local ToggleGuiSection = ToggleGuiTab:NewSection("On/Off")
+
 ToggleGuiSection:NewKeybind("KeybindText", "KeybindInfo", Enum.KeyCode.LeftControl, function()
 	Library:ToggleUI()
 end)
@@ -509,6 +527,28 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 				end
 
+				if v:IsA("Model") then
+					for _, b in pairs(v:GetChildren()) do
+						if b:IsA("Model") then
+							for _, part in pairs(b:GetChildren()) do
+								local args = {
+									[1] = part,
+									[2] = i
+								}
+
+								game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+							end
+						else
+							local args = {
+								[1] = b,
+								[2] = i
+							}
+
+							game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+						end
+					end
+				end
+
 				if v:FindFirstChild("Stand Aura") then
 					local args = {
 						[1] = v:FindFirstChild("Stand Aura"),
@@ -572,17 +612,17 @@ local StandFarmTab = Window:NewTab("Stand Farm")
 
 local StandFarmSection = StandFarmTab:NewSection("Stand Farm")
 
-StandFarmSection:NewDropdown("Stand to farm", "Select the stand you want to get!", StandsTable, function(currentoption)
-	_G.StandToFarm = currentoption
+StandFarmSection:NewDropdown("Stand to farm", "Select the stand you want to get!", StandsTable, function(option)
+	_G.StandToFarm = option
 end)
 
 local CurrentStandLabel = StandFarmSection:NewLabel("Current Stand: ".. player:WaitForChild("Data"):WaitForChild("AbilityName").Value)
 
-local ArrowsUsedLabel = StandFarmSection:NewLabel("Arrows used: ".. _G.ArrowsUsed)
+local ArrowsUsedLabel = StandFarmSection:NewLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
 
 StandFarmSection:NewButton("Reset Arrows used counter", "Resets the Arrows used counter to 0!", function()
 	_G.ArrowsUsed = 0
-	ArrowsUsedLabel:UpdateLabel("Arrows used: ".. _G.ArrowsUsed)
+	ArrowsUsedLabel:UpdateLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
 end)
 
 game:GetService("RunService").Heartbeat:Connect(function()
@@ -592,23 +632,40 @@ end)
 local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the selected stand!", function(toggle)
 	local char = player.Character
 	local backpack = player.Backpack
-
+	local charpos = char.HumanoidRootPart.Position
 	shared.FarmStand = toggle
 	
-	while shared.FarmStand do
+	if toggle == true then
+		if game.Workspace:FindFirstChild("FarmPart") == nil then
+			FarmPart = Instance.new("Part", game.Workspace)
+			FarmPart.Size = Vector3.new(15, 1, 15)
+			FarmPart.Position = Vector3.new(-10000, 5000, -10000)
+			FarmPart.Transparency = 0.5
+			FarmPart.Anchored = true
+			FarmPart.Name = "FarmPart"
+		else
+			FarmPart:Destroy()
+		end
+
+		char:MoveTo(FarmPart.Position)
+
 		if player.Data.AbilityName.Value == _G.StandToFarm then
 			StandFarmToggler:UpdateToggle("Stand already acquired!")
-			shared.FarmStand = false
-			task.wait(2)
+			toggle = false
+			wait(2)
 			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
 
 		repeat
-			GetArrow(true)
+			local char = player.Character
+			local backpack = player.Backpack
+			GetArrow(true, char, backpack)
+
+			wait(0.2)
 
 			if char:FindFirstChild("Stand Arrow") then
 				if player.PlayerGui.ToolGui.Arrow.Visible == true then
-					for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetDescendants()) do
+					for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetChildren()) do
 						if v.Name == "Yes" then
 							v.Parent = player.PlayerGui.ToolGui
 
@@ -619,25 +676,38 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 						end
 					end
 
+					wait(0.2)
+
 					if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
 						game:GetService("VirtualUser"):ClickButton1(Vector2.new(player.PlayerGui.ToolGui.Yes.Position))
-						_G.ArrowsUsed = _G.ArrowsUsed + 1
-						ArrowsUsedLabel:UpdateLabel("Arrows used: ".. _G.ArrowsUsed)
 					end
+
+					player.PlayerGui.ToolGui:WaitForChild("Yes").MouseButton1Down:Connect(function()
+						_G.ArrowsUsed = _G.ArrowsUsed + 1
+						ArrowsUsedLabel:UpdateLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
+					end)
 				end
 			end
 
 			wait(5)
-		until not shared.FarmStand or player.Data.AbilityName.Value == _G.StandToFarm
+		until player.Data.AbilityName.Value == _G.StandToFarm or not shared.FarmStand
 
-		if player.Data.AbilityName == _G.StandToFarm then
+		if player.Data.AbilityName.Value == _G.StandToFarm then
 			StandFarmToggler:UpdateToggle(_G.StandToFarm.. "acquired!")
-			shared.FarmStand = false
-			task.wait(2)
+			toggle = false
+			wait(2)
 			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
-		wait(5)
+	else
+		local char = player.Character
+		char:MoveTo(charpos)
+		FarmPart:Destroy()
 	end
+end)
+
+StandFarmSection:NewButton("Get Arrow", "Gives you a normal arrow from the shop!", function()
+	local GiveArrow = game:GetService("ReplicatedStorage").ItemGiver.GiveArrow
+	GiveArrow:FireServer()
 end)
 
 
