@@ -656,43 +656,43 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
 
-		repeat
-			local char = player.Character
-			local backpack = player.Backpack
-			GetArrow(true, char, backpack)
+		if player.Data.AbilityName.Value ~= _G.StandToFarm then
+			repeat
+				local char = player.Character
+				local backpack = player.Backpack
+				GetArrow(true, char, backpack)
 
-			char:MoveTo(FarmPart.Position)
+				char:MoveTo(FarmPart.Position)
 
-			wait(0.2)
+				wait(0.2)
 
-			if char:FindFirstChild("Stand Arrow") then
-				if player.PlayerGui.ToolGui.Arrow.Visible == true then
-					for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetChildren()) do
-						if v.Name == "Yes" then
-							v.Parent = player.PlayerGui.ToolGui
+				if char:FindFirstChild("Stand Arrow") then
+					if player.PlayerGui.ToolGui.Arrow.Visible == true then
+						for i, v in ipairs(player.PlayerGui.ToolGui.Arrow:GetChildren()) do
+							if v.Name == "Yes" then
+								v.Parent = player.PlayerGui.ToolGui
 
-							if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
-								v.Position = UDim2.new(0, 0, 0, 0)
-								v.TextTransparency = 1
+								if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
+									v.Position = UDim2.new(0, 0, 0, 0)
+									v.TextTransparency = 1
+								end
 							end
 						end
+
+						wait(0.2)
+
+						if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
+							game:GetService("VirtualUser"):ClickButton1(Vector2.new(player.PlayerGui.ToolGui:FindFirstChild("Yes").Position))
+							ArrowsUsedLabel:UpdateLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
+							_G.ArrowsUsed = _G.ArrowsUsed + 1
+							ArrowsUsedLabel:UpdateLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
+						end
 					end
-
-					wait(0.2)
-
-					if player.PlayerGui.ToolGui:FindFirstChild("Yes") then
-						game:GetService("VirtualUser"):ClickButton1(Vector2.new(player.PlayerGui.ToolGui.Yes.Position))
-					end
-
-					player.PlayerGui.ToolGui:WaitForChild("Yes").MouseButton1Down:Connect(function()
-						_G.ArrowsUsed = _G.ArrowsUsed + 1
-						ArrowsUsedLabel:UpdateLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
-					end)
 				end
-			end
 
-			wait(5)
-		until player.Data.AbilityName.Value == _G.StandToFarm or not shared.FarmStand
+				wait(6)
+			until player.Data.AbilityName.Value == _G.StandToFarm or not shared.FarmStand
+		end
 
 		if player.Data.AbilityName.Value == _G.StandToFarm then
 			StandFarmToggler:UpdateToggle(_G.StandToFarm.. "acquired!")
