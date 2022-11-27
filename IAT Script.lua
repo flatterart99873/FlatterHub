@@ -616,19 +616,6 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 	shared.FarmStand = toggle
 	
 	if toggle == true then
-		if game.Workspace:FindFirstChild("FarmPart") == nil then
-			FarmPart = Instance.new("Part", game.Workspace)
-			FarmPart.Size = Vector3.new(100, 1, 100)
-			FarmPart.Position = Vector3.new(-10000, 5000, -10000)
-			FarmPart.Transparency = 0.5
-			FarmPart.Anchored = true
-			FarmPart.Name = "FarmPart"
-		else
-			FarmPart:Destroy()
-		end
-
-		char:MoveTo(FarmPart.Position)
-
 		if player.Data.AbilityName.Value == _G.StandToFarm then
 			StandFarmToggler:UpdateToggle("Stand already acquired!")
 			toggle = false
@@ -637,6 +624,19 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 		end
 
 		if player.Data.AbilityName.Value ~= _G.StandToFarm then
+			if game.Workspace:FindFirstChild("FarmPart") == nil then
+				FarmPart = Instance.new("Part", game.Workspace)
+				FarmPart.Size = Vector3.new(100, 1, 100)
+				FarmPart.Position = Vector3.new(-10000, 5000, -10000)
+				FarmPart.Transparency = 0.5
+				FarmPart.Anchored = true
+				FarmPart.Name = "FarmPart"
+			else
+				FarmPart:Destroy()
+			end
+
+			char:MoveTo(FarmPart.Position)
+
 			repeat
 				local char = player.Character
 				local backpack = player.Backpack
