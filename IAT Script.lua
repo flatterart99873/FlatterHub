@@ -515,44 +515,24 @@ end)
 
 CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a server sided STAND INVISIBILITY!!", function(toggle)
 	if toggle == true then
-		for i = 0, 1, 0.1 do
+		for i = 1, 0, -0.1 do
 			wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetChildren()) do
-				if v:IsA("Part") or "MeshPart" and v.Name ~= "Stand HumanoidRootPart" then
-					local args = {
-						[1] = v,
-						[2] = i
-					}
+				if v:IsA("Part") or v:IsA("MeshPart") then
+					if v.Name ~= "Stand HumanoidRootPart" then
+						local args = {
+							[1] = v,
+							[2] = i
+						}
 
-					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
-				end
-
-				if v:IsA("Model") then
-					for _, b in pairs(v:GetChildren()) do
-						if b:IsA("Model") then
-							for _, part in pairs(b:GetChildren()) do
-								local args = {
-									[1] = part,
-									[2] = i
-								}
-
-								game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
-							end
-						else
-							local args = {
-								[1] = b,
-								[2] = i
-							}
-
-							game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
-						end
+						game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 					end
 				end
 
 				if v:FindFirstChild("Stand Aura") then
 					local args = {
 						[1] = v:FindFirstChild("Stand Aura"),
-						[2] = false
+						[2] = true
 					}
 
 					game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
@@ -570,18 +550,18 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 		for i = 1, 0, -0.1 do
 			wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetChildren()) do
-				if v:IsA("Part") or "MeshPart" and v.Name ~= "Stand HumanoidRootPart" then
-					local args = {
-						[1] = v,
-						[2] = i
-					}
+				if v:IsA("Part") or v:IsA("MeshPart") then
+					if v.Name ~= "Stand HumanoidRootPart" then
+						local args = {
+							[1] = v,
+							[2] = i
+						}
 
-					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+						game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+					end
 				end
 
 				if v:FindFirstChild("Stand Aura") then
-					v:FindFirstChild("Stand Aura")
-
 					local args = {
 						[1] = v:FindFirstChild("Stand Aura"),
 						[2] = true
@@ -1383,9 +1363,11 @@ local StandModTab = Window:NewTab("STAND MOD")
 local GEModSection = StandModTab:NewSection("Golden Experience")
 
 GEModSection:NewButton("No cooldown Beetle Bullet", "No cooldown Beetle Bullet move!", function()
+	local char = player.Character
+	
 	local args = {
     	[1] = true,
-    	[2] = plr.Character.HumanoidRootPart.Position
+    	[2] = char.HumanoidRootPart.Position
 	}
 
 	game:GetService("ReplicatedStorage").Attacks.GE.BeetleBulletToss:FireServer(unpack(args))
