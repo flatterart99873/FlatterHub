@@ -3189,3 +3189,121 @@ THModSection:NewTextBox("No cooldown Beatdown something", "Beatdowns a player / 
 
 	game:GetService("ReplicatedStorage").SpecialMoves.TheHandBeatdown:FireServer(unpack(args))
 end)
+
+
+local KCModSection = StandModTab:NewSection("King Crimson")
+
+KCModSection:NewButton("Bleed everyone 10x", "Makes everyone bleeding 10x!", function()
+	for i = 0, 10, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			if plr ~= player then
+				local args = {
+					[1] = "Bleed",
+					[2] = plr.Character
+				}
+
+				game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+KCModSection:NewTextBox("Bleed something 10x", "Makes bleeding a player / dummy 10x!", function(text)
+	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targethum = target.Humanoid
+
+		local args = {
+			[1] = "Bleed",
+			[2] = target
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+KCModSection:NewButton("Blood Throw everyone (Removes HP)", "Uses Blood Throw on everyone! (Removes HP.)", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = "BloodThrow",
+				[2] = plr.Character.HumanoidRootPart.Position
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+KCModSection:NewTextBox("Blood Throw something (Removes HP)", "Uses Blood Throw on a player / dummy! (Removes HP.)", function(text)
+	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targethum = target.Humanoid
+
+		local args = {
+			[1] = "BloodThrow",
+			[2] = targetpos
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+KCModSection:NewButton("Donut everyone", "Donuts everyone!", function()
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+				[1] = "Donut",
+				[2] = plr.Character
+			}
+
+			game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+		end
+	end
+end)
+
+KCModSection:NewTextBox("Donut something", "Donuts a player / dummy!", function(text)
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	local subtext = get_player(text) or get_entity(text)
+	local targetplrstring = tostring(subtext)
+
+	local target = game.Workspace:FindFirstChild(targetplrstring)
+	local targethum = target.Humanoid
+
+	local args = {
+		[1] = "Donut",
+		[2] = target
+	}
+
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+end)
+
+KCModSection:NewToggle("Toggle INF Epitaph", "Toggles a no cooldown infinite Epitaph!", function(toggle)
+	if toggle then
+		local args = {
+			[1] = "Epitaph",
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+	else
+		local args = {
+			[1] = "UnEpitaph",
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+	end
+end)
