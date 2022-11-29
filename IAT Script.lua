@@ -62,7 +62,7 @@ _G.ArrowsUsed = 0
 
 --[[			LIBRARY FUNCTIONS
 	
-	-- Kavo
+	-- Kavo / GUI Config
 	
 	Kavo.CreateLib(kavName, themeList)
 	Kavo:DraggingEnabled(frame, parent)
@@ -74,7 +74,7 @@ _G.ArrowsUsed = 0
 	
 	Utility:TweenObject(obj, properties, duration, ...)
 	
-	-- Elements
+	-- Create
 	
 	Elements:NewTextBox(tname, tTip, callback)
 	Elements:NewToggle(tname, nTip, callback)
@@ -83,35 +83,16 @@ _G.ArrowsUsed = 0
 	Elements:NewKeybind(keytext, keyinf, first, callback)
 	Elements:NewColorPicker(colText, colInf, defcolor, callback)
 	Elements:NewLabel(title)
-	
-	
-	-- Tabs
-	
+
+	Sections:NewSection(secName, hidden)
 	Tabs:NewTab(tabName)
 	
 	
-	-- ButtonFunction
+	-- Update / Refresh
 	
 	ButtonFunction:UpdateButton(newTitle)
-	
-	
-	-- Sections
-	
-	Sections:NewSection(secName, hidden)
-	
-	
-	-- TogFunction
-	
 	TogFunction:UpdateToggle(newText, isTogOn)
-	
-	
-	-- DropFunction
-	
 	DropFunction:Refresh(newList)
-	
-		
-	-- LabelFunctions
-	
 	labelFunctions:UpdateLabel(newText)
 	
 ]]--
@@ -482,13 +463,15 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 		for i = 0, 1, 0.1 do
 			wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-				if v:IsA("Part") and v.Name ~= "HumanoidRootPart" then
-					local args = {
-						[1] = v,
-						[2] = i
-					}
+				if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("Accessory") and v.Name ~= "HumanoidRootPart" then
+					if v.Name ~= "HumanoidRootPart" then
+						local args = {
+							[1] = v,
+							[2] = i
+						}
 
-					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+						game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+					end
 				end
 			end
 
@@ -503,13 +486,15 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 		for i = 1, 0, -0.1 do
 			wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-				if v:IsA("Part") and v.Name ~= "HumanoidRootPart" then
-					local args = {
-						[1] = v,
-						[2] = i
-					}
+				if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("Accessory") then
+					if v.Name ~= "HumanoidRootPart" then
+						local args = {
+							[1] = v,
+							[2] = i
+						}
 
-					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+						game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+					end
 				end
 			end
 
@@ -623,13 +608,16 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 	local char = player.Character
 	local backpack = player.Backpack
 	local charpos = char.HumanoidRootPart.Position
+	
 	shared.FarmStand = toggle
 	
-	if toggle == true then
+	if shared.FarmStand then
 		if player.Data.AbilityName.Value == _G.StandToFarm then
-			StandFarmToggler:UpdateToggle("Stand already acquired!")
-			toggle = false
-			wait(2)
+			StandFarmToggler:UpdateToggle("Stand already acquired!", state)
+			shared.FarmStand = not shared.FarmStand
+			task.wait(2)
+			toggle = not toggle
+			state = not state
 			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
 
@@ -685,15 +673,28 @@ local StandFarmToggler = StandFarmSection:NewToggle("Farm Stand", "Farms the sel
 		end
 
 		if player.Data.AbilityName.Value == _G.StandToFarm then
-			StandFarmToggler:UpdateToggle(_G.StandToFarm.. "acquired!")
-			toggle = false
-			wait(2)
+			StandFarmToggler:UpdateToggle(_G.StandToFarm.. "acquired!", state)
+			shared.FarmStand = not shared.FarmStand
+			task.wait(2)
+			state = not state
+			toggle = not toggle
 			StandFarmToggler:UpdateToggle("Farm Stand")
 		end
 	else
 		local char = player.Character
 		char:MoveTo(charpos)
 		FarmPart:Destroy()
+	end
+end)
+
+StandFarmSection:NewToggle("Kick if got selected stand", "Kicks you if you got the selected stand!", function(toggle)
+	if toggle then
+		if player:WaitForChild("Data"):WaitForChild("AbilityName").Value == _G.StandToFarm and shared.FarmStand then
+			wait(1)
+			player:Kick("You have gotten the selected stand!")
+		end
+	else
+		return
 	end
 end)
 
