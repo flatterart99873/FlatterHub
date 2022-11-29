@@ -198,6 +198,16 @@ local function VTWAutoHeal()
 	end
 end
 
+local function KarsAutoHeal()
+	local char = player.Character
+
+	if char.Humanoid.Health <= 60 then
+		for i = 0, 100, 1 do
+			game:GetService("ReplicatedStorage").SpecialMoves.KarsHeal:FireServer()
+		end
+	end
+end
+
 local function CDAutoHeal()
 	local char = player.Character
 
@@ -3241,7 +3251,7 @@ KCModSection:NewButton("Blood Throw everyone (Removes HP)", "Uses Blood Throw on
 	end
 end)
 
-KCModSection:NewTextBox("Blood Throw something (Removes HP)", "Uses Blood Throw on a player / dummy! (Removes HP.)", function(text)
+KCModSection:NewButton("Blood Throw something (Removes HP)", "Uses Blood Throw on a player / dummy! (Removes HP.)", function()
 	for i = 0, 10, 1 do
 		local char = player.Character
 		local charpos = char.HumanoidRootPart.Position
@@ -3305,5 +3315,100 @@ KCModSection:NewToggle("Toggle INF Epitaph", "Toggles a no cooldown infinite Epi
 		}
 
 		game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("King Crimson").KCLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+local KarsModSection = StandModTab:NewSection("Kars")
+
+KarsModSection:NewButton("Bleed everyone 10x", "Makes everyone bleeding 10x!", function()
+	for i = 0, 10, 1 do
+		for i, plr in pairs(game.Players:GetPlayers()) do
+			if plr ~= player then
+				local args = {
+    				[1] = "Bleed",
+					[2] = plr.Character
+				}
+
+				game:GetService("Players").LocalPlayer.Backpack.Kars.KARSLocalisedRemote:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+KarsModSection:NewTextBox("Bleed something 10x", "Makes bleeding a player / dummy 10x!", function(text)
+	for i = 0, 10, 1 do
+		local char = player.Character
+		local charpos = char.HumanoidRootPart.Position
+
+		local subtext = get_player(text) or get_entity(text)
+		local targetplrstring = tostring(subtext)
+
+		local target = game.Workspace:FindFirstChild(targetplrstring)
+		local targethum = target.Humanoid
+
+		local args = {
+    		[1] = "Bleed",
+    		[2] = target
+		}
+
+		game:GetService("Players").LocalPlayer.Backpack.Kars.KARSLocalisedRemote:FireServer(unpack(args))
+	end
+end)
+
+KarsModSection:NewButton("Pull everyone", "Brings / Pulls everyone to you!", function()
+	local char = player.Character
+	for i, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player then
+			local args = {
+    			[1] = plr.Character,
+    			[2] = 1,
+    			[3] = char.HumanoidRootPart.Position
+			}
+
+			game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+		end
+	end
+end)
+
+KarsModSection:NewTextBox("Pull / Bring something", "Pulls / Brings a dummy / player to you!", function(text)
+	local char = player.Character
+    local charpos = char.HumanoidRootPart.Position
+
+    local subtext = get_player(text) or get_entity(text)
+    local targetplrstring = tostring(subtext)
+
+    local target = game.Workspace:FindFirstChild(targetplrstring)
+    local targetpos = target.HumanoidRootPart.Position
+    local targethum = target.Humanoid
+
+	local args = {
+    	[1] = target,
+    	[2] = 1,
+    	[3] = charpos
+	}
+
+	game:GetService("ReplicatedStorage").SpecialMoves.Hold:FireServer(unpack(args))
+end)
+
+KarsModSection:NewButton("Kars Shine Mode", "Uses Kars's Shine Mode!", function()
+	game:GetService("ReplicatedStorage").SpecialMoves.KarsShineMode:FireServer()
+end)
+
+KarsModSection:NewButton("Heal yourself", "Heals yourself with a vampire heal! (Faster heal.)", function()
+	for i = 0, 100, 1 do
+		game:GetService("ReplicatedStorage").SpecialMoves.KarsHeal:FireServer()
+	end
+end)
+
+KarsModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
+	local char = player.Character
+
+	if toggle == true then
+		repeat
+			wait()
+			KarsAutoHeal()
+		until toggle == false or char.Humanoid.Health <= 0
+	else
+		char.Humanoid.Health = 0
 	end
 end)
