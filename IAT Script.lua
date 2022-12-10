@@ -303,6 +303,12 @@ for i, v in pairs(game.Workspace.Values:GetChildren()) do
 			KarsSpawned = v.Value
 		end)
 	end
+
+	if game.Workspace.Map:FindFirstChild("Jotaro") then
+		JotaroSpawned = true
+	else
+		JotaroSpawned = false
+	end
 end
 
 local NPCSpawnsSection = SpawnsTab:NewSection("NPC Spawns")
@@ -328,10 +334,18 @@ NPCSpawnsSection:NewButton("Teleport to Zeppeli", "Teleports you to Zeppeli!", f
 	char:MoveTo(game.Workspace.Map:FindFirstChild("Anthonio Zeppeli").HumanoidRootPart.Position)
 end)
 
+local JotaroSpawnedLabel = NPCSpawnsSection:NewLabel("Jotaro spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Jotaro", "Teleports you to Jotaro!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Jotaro").HumanoidRootPart.Position)
+end)
+
 game:GetService("RunService").Heartbeat:Connect(function()
 	PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. tostring(PucciSpawned))
 	KarsSpawnedLabel:UpdateLabel("Kars spawned: ".. tostring(KarsSpawned))
 	ZeppeliSpawnedLabel:UpdateLabel("Zeppeli spawned: ".. tostring(ZeppeliSpawned))
+	JotaroSpawnedLabel:UpdateLabel("Jotaro spawned: ".. tostring(JotaroSpawned))
 end)
 
 local TeleportsTab = Window:NewTab("Teleports")
@@ -356,6 +370,18 @@ TPsSection:NewButton("Teleport to Pucci spawns", "Teleports thru all the Pucci N
 	local charpos = char.HumanoidRootPart.Position
 
 	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Pucci:GetChildren()) do
+		char:MoveTo(npcspawn.Position)
+		wait(1.5)
+	end
+
+	char:MoveTo(charpos)
+end)
+
+TPsSection:NewButton("Teleport to Jotaro spawns", "Teleports thru all the Jotaro NPC spawns!", function()
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+
+	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Jotaro:GetChildren()) do
 		char:MoveTo(npcspawn.Position)
 		wait(1.5)
 	end
