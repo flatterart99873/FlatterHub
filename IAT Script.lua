@@ -44,6 +44,8 @@ IntroScreenGui:Destroy()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("In Another Time GUI", "GrapeTheme")
 
+--[[			VARIABLES			]]--
+
 local StandsTable = {
 	"Star Platinum",
 	"The World",
@@ -56,6 +58,11 @@ local StandsTable = {
 	"The Hand",
 	"King Crimson",
 	"Gold Experience"
+}
+
+local SFDrawings = {
+	"Penis",
+	"Nazi Cross"
 }
 
 _G.ArrowsUsed = 0
@@ -118,6 +125,16 @@ local function get_entity(name)
 			return entity
 		end
 	end
+end
+
+local function get_player_nolp(name)
+    name = name:lower()
+
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if name == player.Name:lower():sub(1, #name) and player.Name:lower():sub(1, #name) ~= game.Players.LocalPlayer.Name:lower():sub(1, #name) then
+            return player
+        end
+    end
 end
 
 local function GetArrow(val, char, backpack)
@@ -208,6 +225,186 @@ local function CDAutoHeal()
 	end
 end
 
+local function Draw(shape)
+	if shape == "pp" then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").ZipperTrail,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		wait(0.1)
+
+		local char = game.Players.LocalPlayer.Character
+		local charpos = char.HumanoidRootPart.Position
+		local lookpos = char.HumanoidRootPart.CFrame.LookVector
+
+		char:MoveTo(charpos + Vector3.new(5, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 5))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(5, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(0, 0, 5))
+
+
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(5, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 5))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(5, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(0, 0, 5))
+
+
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(5, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(5, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 10))
+
+		wait(0.1)
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").ZipperTrail,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	elseif shape == "cross" then
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").ZipperTrail,
+			[2] = true
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+
+		wait(0.1)
+
+		local char = game.Players.LocalPlayer.Character
+		local charpos = char.HumanoidRootPart.Position
+		local lookpos = char.HumanoidRootPart.CFrame.LookVector
+
+		char:MoveTo(charpos - Vector3.new(0, 0, 20))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(10, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(20, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(20, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(10, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(0, 0, 10))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(10, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(10, 0, 0))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos - Vector3.new(0, 0, 20))
+
+		wait()
+
+		local charpos = char.HumanoidRootPart.Position
+		char:MoveTo(charpos + Vector3.new(10, 0, 0))
+
+		wait(0.1)
+
+		local args = {
+			[1] = game:GetService("Players").LocalPlayer.Character.Stand:FindFirstChild("Stand Right Arm").ZipperTrail,
+			[2] = false
+		}
+
+		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
+	end
+end
 
 --[[			MAIN PART			]]--
 
@@ -355,7 +552,7 @@ local TPsSection = TeleportsTab:NewSection("NPC / Player teleports")
 TPsSection:NewTextBox("Teleport to something", "Teleports to a specified player / dummy!", function(text)
 	local char = player.Character
 
-	local subtext = get_player(text) or get_entity(text)
+	local subtext = get_player_nolp(text) or get_entity(text)
 	local targetplrstring = tostring(subtext)
 
 	local target = game.Workspace:FindFirstChild(targetplrstring)
@@ -369,6 +566,8 @@ TPsSection:NewButton("Teleport to Pucci spawns", "Teleports thru all the Pucci N
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
+	wait()
+
 	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Pucci:GetChildren()) do
 		char:MoveTo(npcspawn.Position)
 		wait(1.5)
@@ -380,6 +579,8 @@ end)
 TPsSection:NewButton("Teleport to Jotaro spawns", "Teleports thru all the Jotaro NPC spawns!", function()
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
+
+	wait()
 
 	for i, npcspawn in pairs(game.Workspace:WaitForChild("NpcSpawnPoints").Jotaro:GetChildren()) do
 		char:MoveTo(npcspawn.Position)
@@ -808,6 +1009,37 @@ CombatSection:NewTextBox("Kill something", "Kills a specified player / dummy!", 
 	wait(0.2)
 
 	char:MoveTo(charpos)
+end)
+
+CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
+	while toggle do
+		for i, plr in pairs(game:GetService("Players"):GetPlayers()) do
+			if plr ~= player then
+				if (player.HumanoidRootPart.Position - plr.HumanoidRootPart.Position).Magnitude <= 50 then
+					local args = {
+    					[1] = plr.Character.Humanoid,
+    					[2] = 100,
+    					[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+    					[4] = Vector3.new(0, 0, 0),
+    					[5] = 0.1,
+    					[6] = 1,
+    					[7] = "rbxassetid://260430079",
+    					[8] = 0.6
+					}
+
+					for i = 0, 10, 1 do
+						game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
+					end
+					
+					local args = {
+						[1] = v.Character
+					}
+
+					game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args))
+				end
+			end
+		end
+	end
 end)
 
 CombatSection:NewButton("Multiply Stand", "Multiplies your stand, USE IT WITHOUT STAND.", function()
@@ -2705,14 +2937,12 @@ end)
 
 SFModSection:NewButton("Remove everyone's limbs", "Removes everyone's limbs!", function()
 	for i, plr in pairs(game.Players:GetPlayers()) do
-		if plr ~= player then
-			local args = {
-				[1] = plr.Character
-			}
+		local args = {
+			[1] = plr.Character
+		}
 
-			for i = 0, 10, 1 do
-				game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
-			end
+		for i = 0, 10, 1 do
+			game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
 		end
 	end
 end)
@@ -2753,6 +2983,18 @@ SFModSection:NewToggle("Toggle glide effect", "Toggles Zipper Glide's effect!", 
 
 		game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
 	end
+end)
+
+SFModSection:NewDropdown("Glide effect drawings", "Draw things with the Glide effect!", SFDrawings, function(option)
+	if option == "Penis" then
+		_G.SelectedSFDrawing = "pp"
+	elseif option == "Nazi Cross" then
+		_G.SelectedSFDrawing = "cross"
+	end
+end)
+
+SFModSection:NewButton("Draw selected drawing", "Draws the selected drawing!", function()
+	Draw(_G.SelectedSFDrawing)
 end)
 
 
@@ -3278,7 +3520,7 @@ KCModSection:NewButton("Blood Throw everyone (Removes HP)", "Uses Blood Throw on
 	end
 end)
 
-KCModSection:NewButton("Blood Throw something (Removes HP)", "Uses Blood Throw on a player / dummy! (Removes HP.)", function()
+KCModSection:NewTextBox("Blood Throw something (Removes HP)", "Uses Blood Throw on a player / dummy! (Removes HP.)", function()
 	for i = 0, 10, 1 do
 		local char = player.Character
 		local charpos = char.HumanoidRootPart.Position
