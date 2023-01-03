@@ -26,7 +26,7 @@ wait(0.2)
 IntroGui:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Elastic, 0.5, true)
 wait(1)
 
-game:GetService("TweenService"):Create(IntroGui, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Rotation = 360})
+game:GetService("TweenService"):Create(IntroGui, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Rotation = 360}):Play()
 
 wait(0.3)
 
