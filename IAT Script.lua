@@ -8,6 +8,7 @@ IntroScreenGui.ResetOnSpawn = false
 wait(1)
 
 local IntroGui = Instance.new("TextLabel", IntroScreenGui)
+IntroGui.Font = Enum.Font.Code
 IntroGui.AnchorPoint = Vector2.new(0.5, 0.5)
 IntroGui.Position = UDim2.new(0.5, 0, -1, 0)
 IntroGui.Size = UDim2.new(0.25, 0, 0.4, 0)
@@ -24,11 +25,6 @@ wait(0.2)
 
 IntroGui:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Elastic, 0.5, true)
 wait(1)
-
-for i = 0, 360, 20 do
-	wait()
-	IntroGui.Rotation = i
-end
 
 game:GetService("TweenService"):Create(IntroGui, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Rotation = 360})
 
@@ -695,7 +691,7 @@ end)
 CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles a server sided CHARACTER INVISIBILITY!!", function(toggle)
 	if toggle == true then
 		for i = 0, 1, 0.1 do
-			wait()
+			task.wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
 				if v:IsA("Part") or v:IsA("MeshPart") then
 					if v.Name ~= "HumanoidRootPart" then
@@ -727,7 +723,7 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 		end
 	else
 		for i = 1, 0, -0.1 do
-			wait()
+			task.wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
 				if v:IsA("Part") or v:IsA("MeshPart") then
 					if v.Name ~= "HumanoidRootPart" then
@@ -763,7 +759,7 @@ end)
 CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a server sided STAND INVISIBILITY!!", function(toggle)
 	if toggle == true then
 		for i = 0, 1, 0.1 do
-			wait()
+			task.wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetDescendants()) do
 				if v:IsA("MeshPart") then
 					if v.Name ~= "Stand HumanoidRootPart" then
@@ -804,7 +800,7 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 		end
 	else
 		for i = 1, 0, -0.1 do
-			wait()
+			task.wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetDescendants()) do
 				if v:IsA("MeshPart") then
 					if v.Name ~= "Stand HumanoidRootPart" then
@@ -1187,11 +1183,19 @@ StunSection:NewTextBox("Stun everyone for given seconds", "Stuns all players for
 	char:MoveTo(charpos)
 end)
 
-StunSection:NewTextBox("Stun someone for 10 seconds", "Stuns a specified player for 10 seconds!", function(text)
+StunSection:NewTextBox("Stun someone [NAME]", "Enter the player name here!", function(text)
+	_G.StunName = text
+end)
+
+StunSection:NewTextBox("Stun someone [TIME]", "Etner the duration of the stun here", function()
+	_G.StunDuration = tonumber(text)
+end)
+
+StunSection:NewButton("Stun Player for Time", "Stuns a specified player for specified time!", function()
 	local char = player.Character
 	local charpos = char.HumanoidRootPart.Position
 
-	local subtext = get_player(text)
+	local subtext = get_player(_G.StunName)
 	local targetplrstring = tostring(subtext)
 
 	local target = game.Workspace:FindFirstChild(targetplrstring)
@@ -1205,7 +1209,7 @@ StunSection:NewTextBox("Stun someone for 10 seconds", "Stuns a specified player 
 		[2] = 0,
 		[3] = CFrame.new(target.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
 		[4] = Vector3.new(0, 0, 0),
-		[5] = 10,
+		[5] = _G.StunDuration,
 		[6] = 2,
 		[7] = "rbxassetid://541909913",
 		[8] = 2
@@ -3356,11 +3360,19 @@ TWModSection:NewTextBox("Pull everyone for given seconds!", "Pulls everyone for 
 	end
 end)
 
-TWModSection:NewTextBox("Pull someone for 2 secs", "Pulls a player for 2 seconds!", function(text)
+TWModSection:NewTextBox("Pull someone", "Type the player name here", function(text)
+	_G.PullPlayer = text
+end)
+
+TWModSection:NewTextBox("Pull time", "Type the duration amount here", function(text)
+	_G.PullDuration = tonumber(text)
+end)
+
+TWModSection:NewButton("Pull Player", "Pulls the specified player for specified seconds!", function()
 	local char = player.Character
     local charpos = char.HumanoidRootPart.Position
 
-    local subtext = get_player(text)
+    local subtext = get_player(_G.PullPlayer)
     local targetplrstring = tostring(subtext)
 
     local target = game.Workspace:FindFirstChild(targetplrstring)
@@ -3370,7 +3382,7 @@ TWModSection:NewTextBox("Pull someone for 2 secs", "Pulls a player for 2 seconds
 	local args = {
 		[1] = "Hold",
 		[2] = target,
-		[3] = 2
+		[3] = _G.PullDuration
 	}
 
 	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("The World").TWLocalisedRemote:FireServer(unpack(args))
