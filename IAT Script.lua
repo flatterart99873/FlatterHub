@@ -419,8 +419,9 @@ DisclaimerSection:NewLabel("Enter the players name, not nickname in textboxes!")
 DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
 DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, it's just there.")
 DisclaimerSection:NewLabel('"Something" means a player or dummy.')
-DisclaimerSection:NewLabel("If you use this GUI often, you are likely to get a ban!")
+DisclaimerSection:NewLabel("If you use this GUI often, you can maybe get a ban!")
 DisclaimerSection:NewLabel("Use Character Invisibility without Accessories!")
+DisclaimerSection:NewLabel('If you use "See other exploiters", only you will see them.')
 
 local RulesSection = InfoTab:NewSection("-- Rules --")
 
@@ -837,6 +838,34 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 				}
 
 				game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+			end
+		end
+	end
+end)
+
+CharacterSection:NewToggle("See other invisible players", "Toggles to see other invisible exploiters!", function(toggle)
+	if toggle then
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v.Character:WaitForChild("Head"):WaitForChild("face").Transparency == 1 then
+				for i, v in pairs(v.Character:GetChildren()) do
+					if v:IsA("Part") or v:IsA("MeshPart") then
+						if v.Name ~= "HumanoidRootPart" then
+							v.Transparency = 0.5
+						end
+					end
+				end
+			end
+		end
+	else
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v.Character:WaitForChild("Head"):WaitForChild("face").Transparency == 0.5 then
+				for i, v in pairs(v.Character:GetChildren()) do
+					if v:IsA("Part") or v:IsA("MeshPart") then
+						if v.Name ~= "HumanoidRootPart" then
+							v.Transparency = 1
+						end
+					end
+				end
 			end
 		end
 	end
