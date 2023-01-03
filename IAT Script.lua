@@ -421,7 +421,7 @@ DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, it's just there.
 DisclaimerSection:NewLabel('"Something" means a player or dummy.')
 DisclaimerSection:NewLabel("If you use this GUI often, you can maybe get a ban!")
 DisclaimerSection:NewLabel("Use Character Invisibility without Accessories!")
-DisclaimerSection:NewLabel('If you use "See other exploiters", only you will see them.')
+DisclaimerSection:NewLabel('"See other exploiters" wont affect their invisibility.')
 
 local RulesSection = InfoTab:NewSection("-- Rules --")
 
