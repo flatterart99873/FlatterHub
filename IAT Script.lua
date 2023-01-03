@@ -88,7 +88,6 @@ _G.ArrowsUsed = 0
 	Elements:NewKeybind(keytext, keyinf, first, callback)
 	Elements:NewColorPicker(colText, colInf, defcolor, callback)
 	Elements:NewLabel(title)
-
 	Sections:NewSection(secName, hidden)
 	Tabs:NewTab(tabName)
 	
@@ -662,7 +661,7 @@ ChatSection:NewTextBox("Text", "Insert the text here", function(text)
 	_G.ChatText = text
 end)
 
-ChatSection:NewTextBox("Chat type", "Insert a number here from 0 to 3", function(text)
+ChatSection:NewTextBox("Chat type (0-3)", "Insert a number here from 0 to 3", function(text)
 	_G.ChatType = tonumber(text)
 end)
 
