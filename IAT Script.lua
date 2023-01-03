@@ -30,6 +30,8 @@ for i = 0, 360, 20 do
 	IntroGui.Rotation = i
 end
 
+game:GetService("TweenService"):Create(IntroGui, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Rotation = 360})
+
 wait(0.3)
 
 IntroGui:TweenSize(UDim2.new(0.5, 0, 0.7, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, 0.3, true)
@@ -422,6 +424,7 @@ DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
 DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, it's just there.")
 DisclaimerSection:NewLabel('"Something" means a player or dummy.')
 DisclaimerSection:NewLabel("If you use this GUI often, you are likely to get a ban!")
+DisclaimerSection:NewLabel("Use Character Invisibility without Accessories!")
 
 local RulesSection = InfoTab:NewSection("-- Rules --")
 
@@ -454,14 +457,18 @@ local ItemTPsSection = ItemsTab:NewSection("Pick up all tools")
 
 ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or Dio's diary or Dio's Bone", function()
 	local char = player.Character
-	for i, tool in pairs(game.Workspace:GetChildren()) do
-		if tool.ClassName == "Tool" and tool.Name == "Clock" then
-			tool:Destroy()
+	local ISS = game.Workspace:WaitForChild("ItemSpawnPoints")
+
+	for i, tool in pairs(ISS:WaitForChild("Money"):GetDescendants()) do
+		if tool:IsA("Tool") then
+			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
+			char:MoveTo(ToolPart.Position)
+			wait(0.5)
 		end
 	end
 
-	for i, tool in pairs(game.Workspace:GetChildren()) do
-		if tool.ClassName == "Tool" then
+	for i, tool in pairs(ISS:WaitForChild("Rare Items"):GetDescendants()) do
+		if tool:IsA("Tool") then
 			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
 			char:MoveTo(ToolPart.Position)
 			wait(0.5)
@@ -675,7 +682,7 @@ CharacterSection:NewButton("Fling yourself", "Flings you to your look direction!
 		[1] = game:GetService("Players").LocalPlayer.Character.Humanoid,
 		[2] = 0,
 		[3] = CFrame.new(char.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-		[4] = char.HumanoidRootPart.CFrame.LookVector * Vector3.new(1000, 1000, 1000),
+		[4] = char.HumanoidRootPart.CFrame.LookVector * 1000,
 		[5] = 0.25,
 		[6] = 1,
 		[7] = "rbxassetid://10094837675",
@@ -690,7 +697,7 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 		for i = 0, 1, 0.1 do
 			wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-				if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("Accessory") and v.Name ~= "HumanoidRootPart" then
+				if v:IsA("Part") or v:IsA("MeshPart") then
 					if v.Name ~= "HumanoidRootPart" then
 						local args = {
 							[1] = v,
@@ -713,7 +720,7 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 		for i = 1, 0, -0.1 do
 			wait()
 			for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-				if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("Accessory") then
+				if v:IsA("Part") or v:IsA("MeshPart") then
 					if v.Name ~= "HumanoidRootPart" then
 						local args = {
 							[1] = v,
@@ -737,10 +744,10 @@ end)
 
 CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a server sided STAND INVISIBILITY!!", function(toggle)
 	if toggle == true then
-		for i = 1, 0, -0.1 do
+		for i = 0, 1, 0.1 do
 			wait()
-			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetChildren()) do
-				if v:IsA("Part") or v:IsA("MeshPart") then
+			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetDescendants()) do
+				if v:IsA("MeshPart") then
 					if v.Name ~= "Stand HumanoidRootPart" then
 						local args = {
 							[1] = v,
@@ -771,8 +778,8 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 	else
 		for i = 1, 0, -0.1 do
 			wait()
-			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetChildren()) do
-				if v:IsA("Part") or v:IsA("MeshPart") then
+			for _, v in pairs(game.Players.LocalPlayer.Character.Stand:GetDescendants()) do
+				if v:IsA("MeshPart") then
 					if v.Name ~= "Stand HumanoidRootPart" then
 						local args = {
 							[1] = v,
@@ -786,7 +793,7 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 				if v:FindFirstChild("Stand Aura") then
 					local args = {
 						[1] = v:FindFirstChild("Stand Aura"),
-						[2] = true
+						[2] = false
 					}
 
 					game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
@@ -827,7 +834,7 @@ StandFarmSection:NewButton("Reset Arrows used counter", "Resets the Arrows used 
 	ArrowsUsedLabel:UpdateLabel("Arrows used by Auto Farm: ".. _G.ArrowsUsed)
 end)
 
-game:GetService("RunService").Heartbeat:Connect(function()
+player:WaitForChild("Data"):WaitForChild("AbilityName").Changed:Connect(function()
 	CurrentStandLabel:UpdateLabel("Current Stand: ".. player:WaitForChild("Data"):WaitForChild("AbilityName").Value)
 end)
 
@@ -961,7 +968,6 @@ CombatSection:NewButton("Kill all players", "Kills all players!", function()
 
 			for i = 0, 5, 1 do
 				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
-				wait()
 				game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 			end
 		end
@@ -1015,28 +1021,26 @@ CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
 	while toggle do
 		for i, plr in pairs(game:GetService("Players"):GetPlayers()) do
 			if plr ~= player then
-				if (player.HumanoidRootPart.Position - plr.HumanoidRootPart.Position).Magnitude <= 50 then
-					local args = {
-    					[1] = plr.Character.Humanoid,
-    					[2] = 100,
-    					[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
-    					[4] = Vector3.new(0, 0, 0),
-    					[5] = 0.1,
-    					[6] = 1,
-    					[7] = "rbxassetid://260430079",
-    					[8] = 0.6
-					}
+				local args = {
+    				[1] = plr.Character.Humanoid,
+    				[2] = 100,
+    				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
+    				[4] = Vector3.new(0, 0, 0),
+    				[5] = 0.1,
+    				[6] = 1,
+    				[7] = "rbxassetid://260430079",
+    				[8] = 0.6
+				}
 
-					for i = 0, 10, 1 do
-						game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
-					end
-					
-					local args = {
-						[1] = v.Character
-					}
-
-					game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args))
+				for i = 0, 10, 1 do
+					game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
 				end
+					
+				local args = {
+					[1] = v.Character
+				}
+
+				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args))
 			end
 		end
 	end
