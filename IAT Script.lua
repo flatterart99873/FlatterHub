@@ -707,6 +707,15 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 						game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 					end
 				end
+
+				if v:IsA("Accessory") then
+					local args = {
+						[1] = v:FindFirstChild("Handle"),
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
 			end
 
 			local args = {
@@ -729,6 +738,15 @@ CharacterSection:NewToggle("Toggle server side CHARACTER INVISIBILITY", "Toggles
 
 						game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 					end
+				end
+
+				if v:IsA("Accessory") then
+					local args = {
+						[1] = v:FindFirstChild("Handle"),
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 				end
 			end
 
@@ -761,19 +779,28 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 				if v:FindFirstChild("Stand Aura") then
 					local args = {
 						[1] = v:FindFirstChild("Stand Aura"),
-						[2] = true
+						[2] = false
 					}
 
 					game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
 				end
+
+				if v:IsA("Accessory") then
+					local args = {
+						[1] = v:FindFirstChild("Handle"),
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
+
+				local args = {
+					[1] = v:FindFirstChild("face"),
+					[2] = i
+				}
+
+				game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 			end
-
-			local args = {
-				[1] = v:FindFirstChild("face"),
-				[2] = i
-			}
-
-			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 		end
 	else
 		for i = 1, 0, -0.1 do
@@ -793,19 +820,28 @@ CharacterSection:NewToggle("Toggle server side STAND INVISIBILITY", "Toggles a s
 				if v:FindFirstChild("Stand Aura") then
 					local args = {
 						[1] = v:FindFirstChild("Stand Aura"),
-						[2] = false
+						[2] = true
 					}
 
 					game:GetService("ReplicatedStorage").Basic.Enabled:FireServer(unpack(args))
 				end
+
+				if v:IsA("Accessory") then
+					local args = {
+						[1] = v:FindFirstChild("Handle"),
+						[2] = i
+					}
+
+					game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+				end
+
+				local args = {
+					[1] = v:FindFirstChild("face"),
+					[2] = i
+				}
+
+				game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 			end
-
-			local args = {
-				[1] = v:FindFirstChild("face"),
-				[2] = i
-			}
-
-			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
 		end
 	end
 end)
