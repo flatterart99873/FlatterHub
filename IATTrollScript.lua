@@ -5,12 +5,16 @@ local args = {
 
 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 
+wait()
+
 local args = {
     [1] = "i eat children",
     [2] = "All"
 }
 
 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+
+wait()
 
 local args = {
     [1] = "rape children nigger",
@@ -19,12 +23,16 @@ local args = {
 
 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 
+wait()
+
 local args = {
     [1] = "i sex",
     [2] = "All"
 }
 
 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+
+wait()
 
 local args = {
     [1] = "child porn",
@@ -33,6 +41,6 @@ local args = {
 
 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 
+wait()
 
 game:GetService("ReplicatedStorage"):WaitForChild("Essentals"):WaitForChild("AdminPanel"):FireServer()
-game.Players.LocalPlayer:Kick("Nah bro...")
