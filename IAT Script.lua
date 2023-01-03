@@ -645,11 +645,40 @@ MapTPsSection:NewButton("Brazil", "Teleport to brazil easter egg", function()
 end)
 
 
-local ToggleGuiTab = Window:NewTab("Toggle GUI")
-local ToggleGuiSection = ToggleGuiTab:NewSection("On/Off")
+local OthersTab = Window:NewTab("Others")
+local ToggleGuiSection = OthersTab:NewSection("Toggle GUI: On/Off")
 
 ToggleGuiSection:NewKeybind("KeybindText", "KeybindInfo", Enum.KeyCode.LeftControl, function()
 	Library:ToggleUI()
+end)
+
+local ChatSection = OthersTab:NewSection("Chat")
+
+ChatSection:NewTextBox("Player / Dummy", "Insert a player or dummy name here", function(text)
+	_G.ChatName = text
+end)
+
+ChatSection:NewTextBox("Text", "Insert the text here", function(text)
+	_G.ChatText = text
+end)
+
+ChatSection:NewTextBox("Chat type", "Insert a number here from 0 to 3", function(text)
+	_G.ChatType = tonumber(text)
+end)
+
+ChatSection:NewButton("Chat", "Makes the player / dummy chat! (Wont appear in real chat.)", function()
+	local chatentity = get_player(_G.ChatName) or get_entity(_G.ChatName)
+	local chatentityinstance
+
+	pcall(function()
+		if chatentity:IsA("Player") then
+			chatentityinstance = chatentity.Character
+		elseif chatentity:IsA("Model") then
+			chatentityinstance = chatentity:FindFirstChild("Head")
+		end
+	end)
+
+	game:GetService("Chat"):Chat(chatentityinstance, _G.ChatText, _G.ChatType)
 end)
 
 local PlayerTab = Window:NewTab("Player")
@@ -2865,7 +2894,7 @@ WSModSection:NewButton("Take everyone's stand", "Takes everyone's stand!", funct
 	end
 end)
 
-WSModSection:NewTextBox("Take someone's stand", "Takes a specified player's stand!", function(text)
+WSModSection:NewTextBox("Take someone's stand", "Takes a specified player's stand! (They can't use moves.)", function(text)
 	local char = player.Character
     local charpos = char.HumanoidRootPart.Position
 
@@ -2883,7 +2912,7 @@ WSModSection:NewTextBox("Take someone's stand", "Takes a specified player's stan
 	game:GetService("ReplicatedStorage").Attacks.Whitesnake.DiscRemoval:FireServer(unpack(args))
 end)
 
-WSModSection:NewButton("Take everyone's memory (slow)", "Takes everyone's memory! (Slows players down.)", function()
+WSModSection:NewButton("Take everyone's memory", "Takes everyone's memory! (Slows players down.)", function()
 	for i, plr in pairs(game.Players:GetPlayers()) do
 		if plr ~= player then
 			local args = {
