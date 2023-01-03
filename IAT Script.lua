@@ -853,6 +853,10 @@ CharacterSection:NewToggle("See other invisible players", "Toggles to see other 
 							v.Transparency = 0.5
 						end
 					end
+
+					if v:FindFirstChild("face") then
+						v:FindFirstChild("face").Transparency = 0.5
+					end
 				end
 			end
 		end
@@ -864,6 +868,10 @@ CharacterSection:NewToggle("See other invisible players", "Toggles to see other 
 						if v.Name ~= "HumanoidRootPart" then
 							v.Transparency = 1
 						end
+					end
+
+					if v:FindFirstChild("face") then
+						v:FindFirstChild("face").Transparency = 1
 					end
 				end
 			end
