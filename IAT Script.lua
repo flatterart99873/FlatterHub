@@ -1,6 +1,13 @@
 local player = game:GetService("Players").LocalPlayer
 local char = player.Character
 
+game.Players.PlayerRemoving:Connect(function(plr)
+	if plr == player then
+		wait(1)
+		player:Kick("Security Kick by Flatter Hub! Your account may be in danger by AntiCheat! Flatter Hub will prevent your account being banned from the game with this kick.")
+	end
+end)
+
 local IntroScreenGui = Instance.new("ScreenGui", player.PlayerGui)
 IntroScreenGui.Name = "IntroScreenGui"
 IntroScreenGui.ResetOnSpawn = false
@@ -403,6 +410,16 @@ local function Draw(shape)
 	end
 end
 
+local function customcd(name, button, cooldown)
+	local args = {
+		[1] = name,
+		[2] = "(".. button:upper().. ")",
+		[3] = cooldown
+	}
+
+	game:GetService("ReplicatedStorage").CoolDowns:FireServer(unpack(args))
+end
+
 --[[			MAIN PART			]]--
 
 local InfoTab = Window:NewTab("Info (MUST READ!)")
@@ -679,6 +696,35 @@ ChatSection:NewButton("Chat", "Makes the player / dummy chat! (Wont appear in re
 
 	game:GetService("Chat"):Chat(chatentityinstance, _G.ChatText, _G.ChatType)
 end)
+
+local GUISection = OthersTab:NewSection("GUIs")
+
+GUISection:NewToggle("Toggle Stand Storage", "Toggles the Stand Storage GUI!", function(toggle)
+	if toggle then
+		player.PlayerGui:FindFirstChild("StandStorageGui"):FindFirstChild("StandStorage").Visible = true
+	else
+		player.PlayerGui:FindFirstChild("StandStorageGui"):FindFirstChild("StandStorage").Visible = false
+	end
+end)
+
+local CooldownSection = OthersTab:NewSection("Custom Cooldowns")
+
+CooldownSection:NewTextBox("Cooldown Name", "Enter the cooldowns name here", function(text)
+	_G.CooldownName = text
+end)
+
+CooldownSection:NewTextBox("Cooldown Key", "Enter the cooldowns key here", function(text)
+	_G.CooldownKey = text
+end)
+
+CooldownSection:NewTextBox("Cooldown Time", "Enter the cooldowns duration here", function(text)
+	_G.CooldownTime = tonumber(text)
+end)
+
+CooldownSection:NewButton("Cooldown", "Use Custom Cooldown!", function()
+	customcd(_G.CooldownName, _G.CooldownKey, _G.CooldownTime)
+end)
+
 
 local PlayerTab = Window:NewTab("Player")
 local MovementSection = PlayerTab:NewSection("Movement (Walkspeed, JumpPower)")
@@ -1118,7 +1164,7 @@ CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
 	while toggle do
 		for i, plr in pairs(game:GetService("Players"):GetPlayers()) do
 			if plr ~= player then
-				local args = {
+				local args1 = {
     				[1] = plr.Character.Humanoid,
     				[2] = 100,
     				[3] = CFrame.new(plr.Character.HumanoidRootPart.Position, Vector3.new(0, 0, 0)),
@@ -1129,15 +1175,14 @@ CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
     				[8] = 0.6
 				}
 
-				for i = 0, 10, 1 do
-					game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args))
-				end
-					
-				local args = {
+				local args2 = {
 					[1] = v.Character
 				}
 
-				game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args))
+				for i = 0, 10, 1 do
+					game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
+					game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
+				end
 			end
 		end
 	end
@@ -3046,12 +3091,14 @@ end)
 
 SFModSection:NewButton("Remove everyone's limbs", "Removes everyone's limbs!", function()
 	for i, plr in pairs(game.Players:GetPlayers()) do
-		local args = {
-			[1] = plr.Character
-		}
+		if plr ~= player then
+			local args = {
+				[1] = plr.Character
+			}
 
-		for i = 0, 10, 1 do
-			game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
+			for i = 0, 10, 1 do
+				game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
+			end
 		end
 	end
 end)
@@ -3073,6 +3120,15 @@ SFModSection:NewTextBox("Remove something's limbs", "Removes a dummy's / player'
 
 	for i = 0, 10, 1 do
 		game:GetService("ReplicatedStorage").SpecialMoves.LimbRemoval:FireServer(unpack(args))
+	end
+end)
+
+SFModSection:NewButton("Remove Limb lag", "Fixes some lag if you spam limbs (Only for you.)", function()
+	for i, v in pairs(game.Workspace:GetChildren()) do
+		if v.Name == "Left Arm" or v.Name == "Right Arm" or
+		v.Name == "Left Leg" or v.Name == "Right Leg" then
+			v:Destroy()
+		end
 	end
 end)
 
