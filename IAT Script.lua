@@ -438,6 +438,8 @@ DisclaimerSection:NewLabel('"Something" means a player or dummy.')
 DisclaimerSection:NewLabel("If you use this GUI often, you can maybe get a ban!")
 DisclaimerSection:NewLabel("Use Character Invisibility without Accessories!")
 DisclaimerSection:NewLabel('"See other exploiters" wont affect their invisibility.')
+DisclaimerSection:NewLabel("Flatter Hub has a low protection for AntiCheat bans!")
+DisclaimerSection:NewLabel("If you get banned then Flatter Hub may protect your account.")
 
 local RulesSection = InfoTab:NewSection("-- Rules --")
 
