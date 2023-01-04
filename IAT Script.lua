@@ -1167,6 +1167,7 @@ end)
 
 CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
 	while toggle do
+		wait()
 		for i, plr in pairs(game:GetService("Players"):GetPlayers()) do
 			if plr ~= player then
 				local args1 = {
@@ -1181,7 +1182,7 @@ CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
 				}
 
 				local args2 = {
-					[1] = v.Character
+					[1] = plr.Character
 				}
 
 				for i = 0, 10, 1 do
