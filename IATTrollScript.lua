@@ -1,45 +1,31 @@
-local args = {
-    [1] = "nigger",
-    [2] = "All"
-}
+local function chat(msg)
+    local args = {
+        [1] = tostring(msg),
+        [2] = "All"
+    }
 
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+end
 
+chat("i eat children")
 wait()
-
-local args = {
-    [1] = "i eat children",
-    [2] = "All"
-}
-
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
-
+chat("rape children nigger")
 wait()
-
-local args = {
-    [1] = "rape children nigger",
-    [2] = "All"
-}
-
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
-
+chat("i sex")
 wait()
-
-local args = {
-    [1] = "i sex",
-    [2] = "All"
-}
-
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
-
+chat("child porn")
 wait()
-
-local args = {
-    [1] = "child porn",
-    [2] = "All"
-}
-
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+chat("gay sex")
+wait()
+chat("gay monkey porn")
+wait()
+chat("lesbian black nigger porn")
+wait()
+chat("gay black porn")
+wait()
+chat("i love hitler")
+wait()
+chat("racism rape nigger")
 
 wait()
 
