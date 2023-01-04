@@ -1,12 +1,31 @@
 local player = game:GetService("Players").LocalPlayer
 local char = player.Character
 
-game.Players.PlayerRemoving:Connect(function(plr)
-	if plr == player then
-		wait(1)
-		player:Kick("Security Kick by Flatter Hub! Your account may be in danger by AntiCheat! Flatter Hub will prevent your account being banned from the game with this kick.")
+coroutine.wrap(function()
+	while wait(2) do
+		if not player then
+			player:Kick("Security Kick by Flatter Hub! Your account may be in danger by AntiCheat! Flatter Hub will prevent your account being banned from the game with this kick.")
+		end
 	end
+end)()
+
+local oldhmmnc = nil
+
+oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
+	if self == player and tostring(getnamecallmethod():lower()) == "kick" then
+		game:GetService("StarterGui"):SetCore("SendNotification", {
+			Title = "Flatter Hub",
+			Text = "You almost got kicked! Successfully prevented.",
+			Icon = "rbxassetid://6238540373",
+			Duration = 3,
+		})
+
+		return nil
+	end
+
+	return oldhmmnc(self, ...)
 end)
+
 
 local IntroScreenGui = Instance.new("ScreenGui", player.PlayerGui)
 IntroScreenGui.Name = "IntroScreenGui"
@@ -441,6 +460,8 @@ DisclaimerSection:NewLabel("Flatter Hub has a low protection for AntiCheat bans!
 DisclaimerSection:NewLabel("If you get banned then Flatter Hub may protect you.")
 DisclaimerSection:NewLabel("Server Side means everyone can see it!")
 DisclaimerSection:NewLabel("Client Side means only you can see it!")
+DisclaimerSection:NewLabel("Flatter Hub has an Client Side AntiKick System.")
+DisclaimerSection:NewLabel("Using Anti TimeStop while timestop will freeze you!")
 
 local RulesSection = InfoTab:NewSection("-- Rules --")
 
@@ -475,6 +496,7 @@ local ItemTPsSection = ItemsTab:NewSection("Pick up all tools")
 
 ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or Dio's diary or Dio's Bone", function()
 	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
 	local ISS = game.Workspace:WaitForChild("ItemSpawnPoints")
 
 	for i, tool in pairs(ISS:WaitForChild("Money"):GetDescendants()) do
@@ -492,6 +514,16 @@ ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or
 			wait(0.5)
 		end
 	end
+
+	for i, tool in pairs(game.Workspace:GetChildren()) do
+		if tool:IsA("Tool") then
+			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
+			char:MoveTo(ToolPart.Position)
+			wait(0.5)
+		end
+	end
+
+	char:MoveTo(charpos)
 end)
 
 
@@ -704,12 +736,8 @@ end)
 
 local GUISection = OthersTab:NewSection("GUIs")
 
-GUISection:NewToggle("Toggle Stand Storage", "Toggles the Stand Storage GUI!", function(toggle)
-	if toggle then
-		player.PlayerGui:FindFirstChild("StandStorageGui"):FindFirstChild("StandStorage").Visible = true
-	else
-		player.PlayerGui:FindFirstChild("StandStorageGui"):FindFirstChild("StandStorage").Visible = false
-	end
+GUISection:NewButton("Stand Storage", "Access the Stand Storage GUI from anywhere!", function()
+	player.PlayerGui:FindFirstChild("StandStorageGui"):FindFirstChild("StandStorage").Visible = true
 end)
 
 local CooldownSection = OthersTab:NewSection("Custom Cooldowns")
@@ -1169,6 +1197,7 @@ CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
 	while toggle do
 		wait()
 		for i, plr in pairs(game:GetService("Players"):GetPlayers()) do
+			wait()
 			if plr ~= player then
 				local args1 = {
     				[1] = plr.Character.Humanoid,
@@ -1185,7 +1214,7 @@ CombatSection:NewToggle("Kill Aura", "Toggles Kill Aura!!", function(toggle)
 					[1] = plr.Character
 				}
 
-				for i = 0, 10, 1 do
+				for i = 0, 5, 1 do
 					game:GetService("ReplicatedStorage").SpecialMoves.BlockBreak:FireServer(unpack(args2))
 					game:GetService("ReplicatedStorage").Attacks.DamageBlunt:FireServer(unpack(args1))
 				end
@@ -1230,24 +1259,21 @@ CombatSection:NewButton("Anti TimeStop", "You can move freely in timestops!", fu
 
 	local Anchor = Instance.new("RemoteEvent", game.ReplicatedStorage.Basic)
 	Anchor.Name = "Anchor"
-
 	Anchor:FireServer()
 end)
 
 CombatSection:NewToggle("AutoBlock", "Automatically blocks all incoming attacks.", function(toggled)
-	if toggled == true then
-		while wait() do
-			if toggled == false then
-				break
-			end
+	while toggle do
+		local args = {
+			[1] = true
+		}
 
-			local args = {
-    			[1] = true
-			}
-
-			game:GetService("ReplicatedStorage").Basic.Block:FireServer(unpack(args))
-		end
+		game:GetService("ReplicatedStorage").Basic.Block:FireServer(unpack(args))
 	end
+end)
+
+CombatSection:NewButton("UnStuck / UnFreeze", "Use this if you get stuck", function()
+	player.Character:Destroy()
 end)
 
 --[[game.Workspace.ChildAdded:Connect(function(child)
@@ -1944,9 +1970,9 @@ end)
 
 local SPModSection = StandModTab:NewSection("Star Platinum")
 
-SPModSection:NewButton("No cooldown 7 sec Time Stop", "Uses a 7 sec Time Stop without cooldown!", function()
+SPModSection:NewButton("No cooldown 3 sec Time Stop", "Uses a 7 sec Time Stop without cooldown!", function()
 	local args = {
-		[1] = 7,
+		[1] = 3,
 		[2] = "Jotaro"
 	}
 
@@ -2026,35 +2052,23 @@ end)
 
 VTWModSection:NewToggle("Toggle road roller", "Shows a bit of road roller! (No damage, but funny.)", function(toggle)
 	if toggle == true then
-		local args = {
-			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
-			[2] = 0
-		}
+		for i, v in pairs(player.Character:FindFirstChild("Road Roller"):GetChildren()) do
+			local args = {
+				[1] = v,
+				[2] = 0
+			}
 
-		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
+	else
+		for i, v in pairs(player.Character:FindFirstChild("Road Roller"):GetChildren()) do
+			local args = {
+				[1] = v,
+				[2] = 1
+			}
 
-		local args = {
-			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
-			[2] = 0
-		}
-
-		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
-	end
-
-	if toggle == false then
-		local args = {
-			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller"):FindFirstChild("Roller Bits"),
-			[2] = 1
-		}
-
-		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
-
-		local args = {
-			[1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Road Roller").Center,
-			[2] = 1
-		}
-
-		game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
 	end
 end)
 
@@ -2497,7 +2511,7 @@ TWOHModSection:NewButton("No Cooldown Time Stop", "You can use the Time Stop wit
 	game:GetService("ReplicatedStorage").SpecialMoves.Timestop:FireServer(unpack(args))
 end)
 
-TWOHModSection:NewButton("Overwrite everyone (No dmg, stun)", "Uses the overwrite type damage on everyone!", function()
+TWOHModSection:NewButton("Overwrite everyone", "Uses the overwrite type damage on everyone!", function()
 	local char = player.Character
 	local charpos = char:WaitForChild("HumanoidRootPart").Position
 
