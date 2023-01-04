@@ -427,7 +427,7 @@ local InfoTab = Window:NewTab("Info (MUST READ!)")
 local Section = InfoTab:NewSection("-- Script Owners --")
 local Label = Section:NewLabel("Script Owner: flatterart99873")
 local Label = Section:NewLabel("Script / Asset helper: yba_jojo7")
-local Label = Section:NewLabel("Gui Owner: KavoUI")
+local Label = Section:NewLabel("Gui Template: KavoUI")
 
 local DisclaimerSection = InfoTab:NewSection("-- Disclaimers --")
 
@@ -436,15 +436,18 @@ DisclaimerSection:NewLabel("Some toggle features may disable at any time!")
 DisclaimerSection:NewLabel("Fake cooldowns doesn't do anything, it's just there.")
 DisclaimerSection:NewLabel('"Something" means a player or dummy.')
 DisclaimerSection:NewLabel("If you use this GUI often, you can maybe get a ban!")
-DisclaimerSection:NewLabel("Use Character Invisibility without Accessories!")
 DisclaimerSection:NewLabel('"See other exploiters" wont affect their invisibility.')
 DisclaimerSection:NewLabel("Flatter Hub has a low protection for AntiCheat bans!")
-DisclaimerSection:NewLabel("If you get banned then Flatter Hub may protect your account.")
+DisclaimerSection:NewLabel("If you get banned then Flatter Hub may protect you.")
+DisclaimerSection:NewLabel("Server Side means everyone can see it!")
+DisclaimerSection:NewLabel("Client Side means only you can see it!")
 
 local RulesSection = InfoTab:NewSection("-- Rules --")
 
 RulesSection:NewLabel("Please don't spam things to keep it working!")
 RulesSection:NewLabel("Use this GUI wisely.")
+RulesSection:NewLabel("Do not abuse this GUI often!")
+RulesSection:NewLabel("Do not give any info about this GUI to developers!")
 RulesSection:NewLabel("Have fun!")
 
 
