@@ -190,6 +190,7 @@ end
 wait(2)
 
 local isfounditem = false
+local isfoundpucci = false
 
 -- check farmed items
 for _, bpitem in pairs(player.Backpack:GetChildren()) do
@@ -207,6 +208,7 @@ wait(2)
 
 if game.Workspace.Values.PucciSpawned.Value == true then
 	notify("Pucci is spawned!!!")
+	isfoundpucci = true
 	for i, v in pairs(player.Backpack:GetChildren()) do
 		if v:IsA("Tool") then
 			if v.Name:lower() == "dio's bone" then
@@ -240,6 +242,6 @@ if game.Workspace.Values.PucciSpawned.Value == true then
 	end
 
 	player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
-elseif isfounditem == false then
+elseif isfounditem == false or game.Workspace.Values.PucciSpawned.Value == false or isfoundpucci == false then
 	Teleport()
 end
