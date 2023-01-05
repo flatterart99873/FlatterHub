@@ -1,6 +1,6 @@
 local ItemsToFarm = {
-	["Requiem Arrow"] = true,
-	["Dio's Diary"] = true,
+	["Requiem Arrow"] = false,
+	["Dio's Diary"] = false,
 	["Dio's Bone"] = true
 }
 
@@ -223,6 +223,14 @@ if game.Workspace.Values.PucciSpawned.Value == true then
 						wait(5)
 
 						player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
+
+						game:GetService("ReplicatedStorage").ItemGiver.GiveGreenBaby:FireServer()
+
+						for i, v in pairs(player.Character:GetChildren()) do
+							if v:IsA("Tool") then
+								v.Parent = player.Backpack
+							end
+						end
 					elseif player.Data.AbilityName.Value == "Whitesnake" or player.Data.Ability.Value == 9 then
 						player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
 					end
