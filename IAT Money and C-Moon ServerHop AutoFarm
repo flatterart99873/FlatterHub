@@ -1,8 +1,4 @@
-local ItemsToFarm = {
-	["Requiem Arrow"] = true,
-	["Dio's Diary"] = true,
-	["Dio's Bone"] = true
-}
+local ItemsToFarm = getgenv().ItemsToFarm
 
 Time = 1 -- seconds
 repeat wait() until game:IsLoaded()
