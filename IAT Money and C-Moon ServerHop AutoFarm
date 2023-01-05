@@ -1,6 +1,6 @@
 local ItemsToFarm = {
-	["Requiem Arrow"] = false,
-	["Dio's Diary"] = false,
+	["Requiem Arrow"] = true,
+	["Dio's Diary"] = true,
 	["Dio's Bone"] = true
 }
 
@@ -70,6 +70,26 @@ function Teleport()
 end
 
 local player = game.Players.LocalPlayer
+
+local function AntiAfk()
+	local GC = getconnections or get_signal_cons
+
+	if GC then
+		for i, v in pairs(GC(player.Idled)) do
+			if v["Disable"] then
+				v["Disable"](v)
+			elseif v["Disconnect"] then
+				v["Disconnect"](v)
+			end
+		end
+	else
+		player.Idled:Connect(function()
+			local VirtualUser = game:GetService("VirtualUser")
+			VirtualUser:CaptureController()
+			VirtualUser:ClickButton2(Vector2.new())
+		end)
+	end
+end
 
 local function Invis()
 	for _, v in pairs(player.Character:GetChildren()) do
@@ -190,7 +210,6 @@ end
 wait(2)
 
 local isfounditem = false
-local isfoundpucci = false
 
 -- check farmed items
 for _, bpitem in pairs(player.Backpack:GetChildren()) do
@@ -206,9 +225,10 @@ end
 
 wait(2)
 
+AntiAfk()
+
 if game.Workspace.Values.PucciSpawned.Value == true then
 	notify("Pucci is spawned!!!")
-	isfoundpucci = true
 	for i, v in pairs(player.Backpack:GetChildren()) do
 		if v:IsA("Tool") then
 			if v.Name:lower() == "dio's bone" then
@@ -225,14 +245,6 @@ if game.Workspace.Values.PucciSpawned.Value == true then
 						wait(5)
 
 						player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
-
-						game:GetService("ReplicatedStorage").ItemGiver.GiveGreenBaby:FireServer()
-
-						for i, v in pairs(player.Character:GetChildren()) do
-							if v:IsA("Tool") then
-								v.Parent = player.Backpack
-							end
-						end
 					elseif player.Data.AbilityName.Value == "Whitesnake" or player.Data.Ability.Value == 9 then
 						player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
 					end
@@ -242,6 +254,6 @@ if game.Workspace.Values.PucciSpawned.Value == true then
 	end
 
 	player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
-elseif isfounditem == false or game.Workspace.Values.PucciSpawned.Value == false or isfoundpucci == false then
+elseif isfounditem == false then
 	Teleport()
 end
