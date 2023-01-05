@@ -1,0 +1,237 @@
+local ItemsToFarm = {
+	["Requiem Arrow"] = true,
+	["Dio's Diary"] = true,
+	["Dio's Bone"] = true
+}
+
+Time = 1 -- seconds
+repeat wait() until game:IsLoaded()
+wait(Time)
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+function TPReturner()
+   local Site;
+   if foundAnything == "" then
+       Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+   else
+       Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+   end
+   local ID = ""
+   if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+       foundAnything = Site.nextPageCursor
+   end
+   local num = 0;
+   for i,v in pairs(Site.data) do
+       local Possible = true
+       ID = tostring(v.id)
+       if tonumber(v.maxPlayers) > tonumber(v.playing) then
+           for _,Existing in pairs(AllIDs) do
+               if num ~= 0 then
+                   if ID == tostring(Existing) then
+                       Possible = false
+                   end
+               else
+                   if tonumber(actualHour) ~= tonumber(Existing) then
+                       local delFile = pcall(function()
+                           delfile("NotSameServers.json")
+                           AllIDs = {}
+                           table.insert(AllIDs, actualHour)
+                       end)
+                   end
+               end
+               num = num + 1
+           end
+           if Possible == true then
+               table.insert(AllIDs, ID)
+               wait()
+               pcall(function()
+                   writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                   wait()
+                   game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+               end)
+               wait(4)
+           end
+       end
+   end
+end
+
+function Teleport()
+   while wait() do
+       pcall(function()
+           TPReturner()
+           if foundAnything ~= "" then
+               TPReturner()
+           end
+       end)
+   end
+end
+
+local player = game.Players.LocalPlayer
+
+local function Invis()
+	for _, v in pairs(player.Character:GetChildren()) do
+		if v:IsA("Part") or v:IsA("MeshPart") then
+			if v.Name ~= "HumanoidRootPart" then
+				local args = {
+					[1] = v,
+					[2] = 1
+				}
+
+				game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+			end
+		end
+
+		if v:IsA("Accessory") then
+			local args = {
+				[1] = v:FindFirstChild("Handle"),
+				[2] = 1
+			}
+
+			game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+		end
+	end
+
+	local args = {
+		[1] = game.Players.LocalPlayer.Character.Head.face,
+		[2] = 1
+	}
+
+	game:GetService("ReplicatedStorage").Basic.Transparency:FireServer(unpack(args))
+end
+
+local function notify(text)
+	local sgui = Instance.new("ScreenGui", player.PlayerGui)
+	sgui.ResetOnSpawn = false
+	sgui.Name = "sgui"
+
+	local tgui = Instance.new("TextLabel", sgui)
+	tgui.Size = UDim2.new(1, 0, 0.05, 0)
+	tgui.Position = UDim2.new(0, 0, 1, 0)
+	tgui.AnchorPoint = Vector2.new(0, 1)
+	tgui.TextScaled = true
+	tgui.TextColor3 = Color3.fromRGB(255, 255, 255)
+	tgui.TextStrokeTransparency = 0
+	tgui.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+	tgui.Text = tostring(text)
+
+	if player.PlayerGui:FindFirstChild("sgui") then
+		local howmanysguitable = {}
+
+		for i, v in pairs(player.PlayerGui:GetChildren()) do
+			if v.Name == "sgui" then
+				table.insert(howmanysguitable, #howmanysguitable, v.Name)
+			end
+		end
+
+		local howmanysgui = tonumber(#howmanysguitable)
+		tgui.Position = tgui.Position - UDim2.new(0, 0, howmanysgui * 0.15, 0)
+	end
+
+	game:GetService("Debris"):AddItem(sgui, 2)
+end
+
+local function CollectTools()
+	local char = player.Character
+	local charpos = char.HumanoidRootPart.Position
+	local ISS = game.Workspace:WaitForChild("ItemSpawnPoints")
+
+	for i, tool in pairs(ISS:WaitForChild("Money"):GetDescendants()) do
+		if tool:IsA("Tool") then
+			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
+			char:MoveTo(ToolPart.Position)
+			wait(0.5)
+		end
+	end
+
+	for i, tool in pairs(ISS:WaitForChild("Rare Items"):GetDescendants()) do
+		if tool:IsA("Tool") then
+			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
+			char:MoveTo(ToolPart.Position)
+			wait(0.5)
+		end
+	end
+
+	for i, tool in pairs(game.Workspace:GetChildren()) do
+		if tool:IsA("Tool") then
+			local ToolPart = tool:FindFirstChildOfClass("Part") or tool:FindFirstChildOfClass("MeshPart")
+			char:MoveTo(ToolPart.Position)
+			wait(0.5)
+		end
+	end
+
+	char:MoveTo(charpos)
+end
+
+Invis()
+CollectTools()
+
+-- to backpack
+for i, v in pairs(player.Character:GetChildren()) do
+	if v:IsA("Tool") then
+		v.Parent = player.Backpack
+	end
+end
+
+wait(1)
+
+-- use money
+for i, v in pairs(player.Backpack:GetChildren()) do
+	if v:IsA("Tool") and v.Name:lower() == "money" then
+		v.Parent = player.Character
+		game:GetService("VirtualUser"):ClickButton1(Vector2.new())
+	elseif v:IsA("Tool") then
+		v.Parent = player.Backpack
+	end
+end
+
+wait(2)
+
+local isfounditem = false
+
+-- check farmed items
+for _, bpitem in pairs(player.Backpack:GetChildren()) do
+	for itemname, isfarmed in pairs(ItemsToFarm) do
+		if bpitem.Name:lower() == itemname:lower() then
+			if isfarmed == true then
+				notify("Found ".. bpitem.Name)
+				isfounditem = true
+			end
+		end
+	end
+end
+
+wait(2)
+
+if game.Workspace.Values.PucciSpawned.Value == true then
+	notify("Pucci is spawned!!!")
+	for i, v in pairs(player.Backpack:GetChildren()) do
+		if v:IsA("Tool") then
+			if v.Name:lower() == "dio's bone" then
+				for i, v in pairs(player.PlayerGui.StandStorageGui.StandStorage:GetChildren()) do
+					if v:IsA("TextButton") and v.Text == "Whitesnake" then
+						local SlotNum = string.split(v.Name, "Slot")
+
+						local args = {
+							[1] = tonumber(SlotNum[2])
+						}
+						
+						game:GetService("ReplicatedStorage").Essentals.StandStorage:FireServer(unpack(args))
+
+						wait(5)
+
+						player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
+					elseif player.Data.AbilityName.Value == "Whitesnake" or player.Data.Ability.Value == 9 then
+						player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
+					end
+				end
+			end
+		end
+	end
+
+	player.Character:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
+elseif isfounditem == false then
+	Teleport()
+end
