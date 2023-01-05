@@ -128,27 +128,28 @@ local function notify(text)
 	sgui.Name = "sgui"
 
 	local tgui = Instance.new("TextLabel", sgui)
-	tgui.Size = UDim2.new(1, 0, 0.05, 0)
-	tgui.Position = UDim2.new(0, 0, 1, 0)
-	tgui.AnchorPoint = Vector2.new(0, 1)
+	tgui.Size = UDim2.new(0.2, 0, 0.05, 0)
+	tgui.Position = UDim2.new(0.5, 0, 0.1, 0)
+	tgui.AnchorPoint = Vector2.new(0.5, 0.5)
 	tgui.TextScaled = true
-	tgui.TextColor3 = Color3.fromRGB(255, 255, 255)
+	tgui.TextColor3 = Color3.fromRGB(200, 200, 200)
+	tgui.Font = Enum.Font.Code
 	tgui.TextStrokeTransparency = 0
 	tgui.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 	tgui.Text = tostring(text)
+	tgui.ZIndex = 500
+	tgui.BackgroundTransparency = 1
 
-	if player.PlayerGui:FindFirstChild("sgui") then
-		local howmanysguitable = {}
+	local howmanysguitable = {}
 
-		for i, v in pairs(player.PlayerGui:GetChildren()) do
-			if v.Name == "sgui" then
-				table.insert(howmanysguitable, #howmanysguitable, v.Name)
-			end
+	for i, v in pairs(player.PlayerGui:GetChildren()) do
+		if v.Name == "sgui" then
+			table.insert(howmanysguitable, #howmanysguitable + 1, v.Name)
 		end
-
-		local howmanysgui = tonumber(#howmanysguitable)
-		tgui.Position = tgui.Position - UDim2.new(0, 0, howmanysgui * 0.15, 0)
 	end
+
+	local howmanysgui = #howmanysguitable
+	tgui.Position = tgui.Position + UDim2.new(0, 0, howmanysgui * 0.05, 0)
 
 	game:GetService("Debris"):AddItem(sgui, 2)
 end
