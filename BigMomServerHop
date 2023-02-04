@@ -87,6 +87,22 @@ function goto(pos)
     end
 end
 
+local args = {
+	[1] = "SetTeam",
+    [2] = "Pirates"
+}
+game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+
+local args = {
+    [1] = "Buso"
+}
+game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+
+local args = {
+    [1] = "Ken"
+}
+game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+
 goto(Vector3.new(-704, 767, -11111))
 
 repeat
