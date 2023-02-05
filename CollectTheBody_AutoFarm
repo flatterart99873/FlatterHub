@@ -1,0 +1,55 @@
+local function firepp(object, amount, skip)
+	if object.ClassName == "ProximityPrompt" then
+		amount = amount or 1
+		local PromptTime = object.HoldDuration
+		if skip then
+			PromptTime = 0
+		end
+		for i = 1, amount do
+			object:InputHoldBegin()
+			if not skip then
+				wait(object.HoldDuration)
+			end
+			object:InputHoldEnd()
+		end
+		object.HoldDuration = PromptTime
+	else
+		error("Specified instance isn't a ProximityPrompt!")
+	end
+end
+
+for i, v in pairs(game.Workspace:GetDescendants()) do
+	pcall(function()
+		v.Transparency = 1
+	end)
+end
+
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+	vu:Button2Down(Vector2.new(0, 0), game.Workspace.CurrentCamera.CFrame)
+	wait(1)
+	vu:Button2Up(Vector2.new(0, 0), game.Workspace.CurrentCamera.CFrame)
+end)
+
+while task.wait() do
+	for i, v in pairs(game.Workspace.Wild:GetChildren()) do
+		if string.split(v.Name, "/")[1] == game.Players.LocalPlayer.Name then
+			game.Players.LocalPlayer.Character:MoveTo(v:FindFirstChild(string.split(v.Name, "/")[2]).Position)
+			task.wait(0.2)
+			firepp(v:FindFirstChild(string.split(v.Name, "/")[2]).ProximityPrompt, 1, false)
+			task.wait(0.2)
+		else
+			pcall(function()
+				v:FindFirstChild(string.split(v.Name, "/")[2]).ProximityPrompt:Destroy()
+			end)
+		end
+	end
+
+	task.wait(1)
+
+	local args = {
+		[1] = "EarnScore"
+	}
+
+	game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+end
