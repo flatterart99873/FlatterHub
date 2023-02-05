@@ -14,7 +14,6 @@ local function convertToHMS(seconds)
 end
 
 local result = "Elapsed time: ".. convertToHMS(elapsedTime())
-print(result)
 
 if _G.gui == true then
 	local player = game.Players.LocalPlayer
@@ -25,7 +24,7 @@ if _G.gui == true then
 	local label = Instance.new("TextLabel", screengui)
 	label.Text = result
 	label.BackgroundTransparency = 1
-	label.Size = UDim2.new(0.5, 0, 0.05, 0)
+	label.Size = UDim2.new(0.4, 0, 0.05, 0)
 	label.AnchorPoint = Vector2.new(0.5, 0.5)
 	label.Position = UDim2.new(0.5, 0, 0.05, 0)
 	label.Font = Enum.Font.GothamBlack
@@ -33,9 +32,28 @@ if _G.gui == true then
 	label.TextStrokeTransparency = 0
 	label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 	label.TextScaled = true
+
+	local button = Instance.new("TextButton", screengui)
+	button.Text = "X"
+	button.BackgroundTransparency = 1
+	button.Size = UDim2.new(0.05, 0, 0.05, 0)
+	button.AnchorPoint = Vector2.new(0.5, 0.5)
+	button.Position = UDim2.new(0.3, 0, 0.05, 0)
+	button.Font = Enum.Font.GothamBlack
+	button.TextColor3 = Color3.fromRGB(255, 0, 0)
+	button.TextStrokeTransparency = 0
+	button.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+	button.TextScaled = true
+	button.MouseButton1Up:Once(function()
+		_G.gui = false
+	end)
+
 	while task.wait() do
 		if _G.gui == false then
-			print("broke")
+			local player = game.Players.LocalPlayer
+			pcall(function()
+				player.PlayerGui:FindFirstChild("ServerTimer"):Destroy()
+			end)
 			break
 		end
 		result = "Elapsed time: ".. convertToHMS(elapsedTime())
