@@ -1,0 +1,49 @@
+_G.gui = true
+
+local function format(int)
+	return string.format("%02i", int)
+end
+
+local function convertToHMS(seconds)
+	local minutes = (seconds - seconds % 60) / 60
+	seconds = seconds - minutes * 60
+	local hours = (minutes - minutes % 60) / 60
+	minutes = minutes - hours * 60
+
+	return format(hours).. ":".. format(minutes).. ":".. format(seconds)
+end
+
+local result = "Elapsed time: ".. convertToHMS(elapsedTime())
+print(result)
+
+if _G.gui == true then
+	local player = game.Players.LocalPlayer
+	local screengui = Instance.new("ScreenGui", player.PlayerGui)
+	screengui.ResetOnSpawn = false
+	screengui.Name = "ServerTimer"
+
+	local label = Instance.new("TextLabel", screengui)
+	label.Text = result
+	label.BackgroundTransparency = 1
+	label.Size = UDim2.new(0.5, 0, 0.05, 0)
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	label.Position = UDim2.new(0.5, 0, 0.05, 0)
+	label.Font = Enum.Font.GothamBlack
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.TextStrokeTransparency = 0
+	label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+	label.TextScaled = true
+	while task.wait() do
+		if _G.gui == false then
+			print("broke")
+			break
+		end
+		result = "Elapsed time: ".. convertToHMS(elapsedTime())
+		label.Text = result
+	end
+else
+	local player = game.Players.LocalPlayer
+	pcall(function()
+		player.PlayerGui:FindFirstChild("ServerTimer"):Destroy()
+	end)
+end
