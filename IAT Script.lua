@@ -1,6 +1,3 @@
---game:GetService("Players").LocalPlayer:Kick("AntiBan Kick")
--- IF YOU GOT BANNED RUN THIS SCRIPT ABOVE AND REMOVE THE --
-
 local player = game:GetService("Players").LocalPlayer
 local char = player.Character
 
