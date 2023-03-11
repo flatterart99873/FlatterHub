@@ -527,84 +527,9 @@ ItemTPsSection:NewButton("Pick up all spawned tools", "Pick up: Requiem arrow or
 end)
 
 
-local SpawnsTab = Window:NewTab("NPC Spawns")
-
-for i, v in pairs(game.Workspace.Values:GetChildren()) do
-	if v.ClassName ~= "NumberValue" then
-		print("Instance:", v.Name.. ", ClassName:", v.ClassName.. ", Value:", v.Value)
-	end
-
-	if v.Name == "PucciSpawned" then
-		PucciSpawned = v.Value
-
-		v.Changed:Connect(function(value)
-			PucciSpawned = v.Value
-		end)
-	end
-
-	if v.Name == "ZeppeliSpawned" then
-		ZeppeliSpawned = v.Value
-
-		v.Changed:Connect(function(value)
-			ZeppeliSpawned = v.Value
-		end)
-	end
-
-	if v.Name == "KarsSpawned" then
-		KarsSpawned = v.Value
-
-		v.Changed:Connect(function(value)
-			KarsSpawned = v.Value
-		end)
-	end
-
-	if game.Workspace.Map:FindFirstChild("Jotaro") then
-		JotaroSpawned = true
-	else
-		JotaroSpawned = false
-	end
-end
-
-local NPCSpawnsSection = SpawnsTab:NewSection("NPC Spawns")
-
-local PucciSpawnedLabel = NPCSpawnsSection:NewLabel("Pucci spawned:")
-
-NPCSpawnsSection:NewButton("Teleport to Pucci", "Teleports you to Pucci!", function()
-	local char = player.Character
-	char:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
-end)
-
-local KarsSpawnedLabel = NPCSpawnsSection:NewLabel("Kars spawned:")
-
-NPCSpawnsSection:NewButton("Teleport to Kars", "Teleports you to Kars!", function()
-	local char = player.Character
-	char:MoveTo(game.Workspace.Map:FindFirstChild("Kars").HumanoidRootPart.Position)
-end)
-
-local ZeppeliSpawnedLabel = NPCSpawnsSection:NewLabel("Zeppeli spawned:")
-
-NPCSpawnsSection:NewButton("Teleport to Zeppeli", "Teleports you to Zeppeli!", function()
-	local char = player.Character
-	char:MoveTo(game.Workspace.Map:FindFirstChild("Anthonio Zeppeli").HumanoidRootPart.Position)
-end)
-
-local JotaroSpawnedLabel = NPCSpawnsSection:NewLabel("Jotaro spawned:")
-
-NPCSpawnsSection:NewButton("Teleport to Jotaro", "Teleports you to Jotaro!", function()
-	local char = player.Character
-	char:MoveTo(game.Workspace.Map:FindFirstChild("Jotaro").HumanoidRootPart.Position)
-end)
-
-game:GetService("RunService").Heartbeat:Connect(function()
-	PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. tostring(PucciSpawned))
-	KarsSpawnedLabel:UpdateLabel("Kars spawned: ".. tostring(KarsSpawned))
-	ZeppeliSpawnedLabel:UpdateLabel("Zeppeli spawned: ".. tostring(ZeppeliSpawned))
-	JotaroSpawnedLabel:UpdateLabel("Jotaro spawned: ".. tostring(JotaroSpawned))
-end)
-
 local TeleportsTab = Window:NewTab("Teleports")
 
-local TPsSection = TeleportsTab:NewSection("NPC / Player teleports")
+local TPsSection = TeleportsTab:NewSection("NPC Spawn / Player teleports")
 
 TPsSection:NewTextBox("Teleport to something", "Teleports to a specified player / dummy!", function(text)
 	local char = player.Character
@@ -645,6 +570,79 @@ TPsSection:NewButton("Teleport to Jotaro spawns", "Teleports thru all the Jotaro
 	end
 
 	char:MoveTo(charpos)
+end)
+
+for i, v in pairs(game.Workspace.Values:GetChildren()) do
+	if v.ClassName ~= "NumberValue" then
+		print("Instance:", v.Name.. ", ClassName:", v.ClassName.. ", Value:", v.Value)
+	end
+
+	if v.Name == "PucciSpawned" then
+		PucciSpawned = v.Value
+
+		v.Changed:Connect(function(value)
+			PucciSpawned = v.Value
+		end)
+	end
+
+	if v.Name == "ZeppeliSpawned" then
+		ZeppeliSpawned = v.Value
+
+		v.Changed:Connect(function(value)
+			ZeppeliSpawned = v.Value
+		end)
+	end
+
+	if v.Name == "KarsSpawned" then
+		KarsSpawned = v.Value
+
+		v.Changed:Connect(function(value)
+			KarsSpawned = v.Value
+		end)
+	end
+
+	if game.Workspace.Map:FindFirstChild("Jotaro") then
+		JotaroSpawned = true
+	else
+		JotaroSpawned = false
+	end
+end
+
+local NPCSpawnsSection = TeleportsTab:NewSection("NPC Spawns")
+
+local PucciSpawnedLabel = NPCSpawnsSection:NewLabel("Pucci spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Pucci", "Teleports you to Pucci!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Pucci").HumanoidRootPart.Position)
+end)
+
+local KarsSpawnedLabel = NPCSpawnsSection:NewLabel("Kars spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Kars", "Teleports you to Kars!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Kars").HumanoidRootPart.Position)
+end)
+
+local ZeppeliSpawnedLabel = NPCSpawnsSection:NewLabel("Zeppeli spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Zeppeli", "Teleports you to Zeppeli!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Anthonio Zeppeli").HumanoidRootPart.Position)
+end)
+
+local JotaroSpawnedLabel = NPCSpawnsSection:NewLabel("Jotaro spawned:")
+
+NPCSpawnsSection:NewButton("Teleport to Jotaro", "Teleports you to Jotaro!", function()
+	local char = player.Character
+	char:MoveTo(game.Workspace.Map:FindFirstChild("Jotaro").HumanoidRootPart.Position)
+end)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+	PucciSpawnedLabel:UpdateLabel("Pucci spawned: ".. tostring(PucciSpawned))
+	KarsSpawnedLabel:UpdateLabel("Kars spawned: ".. tostring(KarsSpawned))
+	ZeppeliSpawnedLabel:UpdateLabel("Zeppeli spawned: ".. tostring(ZeppeliSpawned))
+	JotaroSpawnedLabel:UpdateLabel("Jotaro spawned: ".. tostring(JotaroSpawned))
 end)
 
 local MapTPsSection = TeleportsTab:NewSection("Map Teleports")
@@ -767,9 +765,19 @@ MovementSection:NewSlider("WalkSpeed", "Changes walk speed", 500, 0, function(s)
 	char.Humanoid.WalkSpeed = s
 end)
 
+MovementSection:NewButton("Reset WalkSpeed", "Resets walk speed", function()
+    local char = player.Character
+	char.Humanoid.WalkSpeed = 16
+end)
+
 MovementSection:NewSlider("JumpPower", "Changes jump power", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     local char = player.Character
 	char.Humanoid.JumpPower = s
+end)
+
+MovementSection:NewButton("Reset JumpPower", "Resets jump power", function()
+    local char = player.Character
+	char.Humanoid.JumpPower = 50
 end)
 
 local CharacterSection = PlayerTab:NewSection("Character")
