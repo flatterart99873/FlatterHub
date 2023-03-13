@@ -758,6 +758,41 @@ CooldownSection:NewButton("Cooldown", "Use Custom Cooldown!", function()
 	customcd(_G.CooldownName, _G.CooldownKey, _G.CooldownTime)
 end)
 
+local EmotesSection = OthersTab:NewSection("Emotes")
+
+EmotesSection:NewLabel("Default Emotes")
+
+EmotesSection:NewButton("Caramelldansen (uncancellable)", "Dances the emote: Caramelldansen", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Default Emotes"].caramelldansen.Animation):Play()
+end)
+
+EmotesSection:NewButton("Miohonda (uncancellable)", "Dances the emote: Miohonda", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Default Emotes"].miohonda.Animation):Play()
+end)
+
+EmotesSection:NewButton("Sit (uncancellable)", "Just sits down.", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Default Emotes"].sit.Start):Play()
+	task.wait(0.75)
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Default Emotes"].Animation.Start):Play()
+end)
+
+EmotesSection:NewLabel("Gamepass Emotes")
+
+EmotesSection:NewButton("Facepalm", "Look at that idiot...", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Gamepass Emotes"].facepalm.Animation):Play()
+end)
+
+EmotesSection:NewButton("Hairflip", "Flips your hair!", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Gamepass Emotes"].hairflip.Animation):Play()
+end)
+
+EmotesSection:NewButton("L (uncancellable)", "Take the L!", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Gamepass Emotes"].l.Animation):Play()
+end)
+
+EmotesSection:NewButton("Yawn", "Yawns.", function()
+	player.Character.Humanoid:LoadAnimation(player.Character.Emotes["Gamepass Emotes"].yawn.Animation):Play()
+end)
 
 local PlayerTab = Window:NewTab("Player")
 local MovementSection = PlayerTab:NewSection("Movement (Walkspeed, JumpPower)")
@@ -974,6 +1009,10 @@ CharacterSection:NewToggle("See other invisible players", "Toggles to see other 
 					if v:FindFirstChild("face") then
 						v:FindFirstChild("face").Transparency = 0.5
 					end
+
+					if v:IsA("Accessory") then
+						v:FindFirstChild("Handle").Transparency = 0.5
+					end
 				end
 			end
 		end
@@ -989,6 +1028,10 @@ CharacterSection:NewToggle("See other invisible players", "Toggles to see other 
 
 					if v:FindFirstChild("face") then
 						v:FindFirstChild("face").Transparency = 1
+					end
+
+					if v:IsA("Accessory") then
+						v:FindFirstChild("Handle").Transparency = 1
 					end
 				end
 			end
@@ -1923,13 +1966,9 @@ end)
 GEModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 
-	if toggle == true then
-		repeat
-			wait()
-			GEAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	while toggle do
+		task.wait(0.2)
+		GEAutoHeal()
 	end
 end)
 
@@ -2234,13 +2273,9 @@ end)
 VTWModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 
-	if toggle == true then
-		repeat
-			wait()
-			VTWAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	while toggle do
+		task.wait(0.2)
+		VTWAutoHeal()
 	end
 end)
 
@@ -2458,13 +2493,9 @@ end)
 CDModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 
-	if toggle == true then
-		repeat
-			wait()
-			CDAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	while toggle do
+		task.wait(0.2)
+		CDAutoHeal()
 	end
 end)
 
@@ -2723,13 +2754,9 @@ end)
 TWOHModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 
-	if toggle == true then
-		repeat
-			wait()
-			TWOHAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	while toggle do
+		task.wait(0.2)
+		TWOHAutoHeal()
 	end
 end)
 
@@ -2891,13 +2918,10 @@ end)
 
 GERModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
-	if toggle == true then
-		repeat
-			wait()
-			GEAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	
+	while toggle do
+		task.wait(0.2)
+		GEAutoHeal()
 	end
 end)
 
@@ -3299,13 +3323,9 @@ end)
 VampModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 
-	if toggle == true then
-		repeat
-			wait()
-			VTWAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	while toggle do
+		task.wait(0.2)
+		VTWAutoHeal()
 	end
 end)
 
@@ -3875,12 +3895,8 @@ end)
 KarsModSection:NewToggle("Auto heal if Low HP", "Automatically heals you to MAX HP when about to die!", function(toggle)
 	local char = player.Character
 
-	if toggle == true then
-		repeat
-			wait()
-			KarsAutoHeal()
-		until toggle == false or char.Humanoid.Health <= 0
-	else
-		char.Humanoid.Health = 0
+	while toggle do
+		task.wait(0.2)
+		KarsAutoHeal()
 	end
 end)
