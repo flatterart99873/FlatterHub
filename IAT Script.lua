@@ -13,14 +13,16 @@ local oldhmmnc = nil
 
 oldhmmnc = hookmetamethod(game, "__namecall", function(self, ...)
 	if self == player and tostring(getnamecallmethod():lower()) == "kick" then
-		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Flatter Hub",
-			Text = "You almost got kicked! Successfully prevented.",
-			Icon = "rbxassetid://6238540373",
-			Duration = 3,
-		})
+		if not checkcaller() then
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+				Title = "Flatter Hub",
+				Text = "You almost got kicked! Successfully prevented.",
+				Icon = "rbxassetid://6238540373",
+				Duration = 3,
+			})
 
-		return nil
+			return nil
+		end
 	end
 
 	return oldhmmnc(self, ...)
