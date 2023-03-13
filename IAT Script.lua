@@ -3180,7 +3180,7 @@ SFModSection:NewToggle("Toggle glide effect", "Toggles Zipper Glide's effect!", 
 	end
 end)
 
-SFModSection:NewDropdown("Glide effect drawings", "Draw things with the Glide effect!", SFDrawings, function(option)
+SFModSection:NewDropdown("Glide effect drawings", "Draw with the Glide effect! (No need to use glide.)", SFDrawings, function(option)
 	if option == "Penis" then
 		_G.SelectedSFDrawing = "pp"
 	elseif option == "Nazi Cross" then
